@@ -1,0 +1,4 @@
+Android: flutter build apk --release  [apk] [.\build\app\outputs\flutter-apk\app-release.apk]
+         flutter build appbundle --release  [aab] [.\build\app\outputs\bundle\release\app-release.aab]
+
+Windows: flutter build windows --release  [exe] [.\build\windows\x64\runner\Release\turni_gtt.exe]
