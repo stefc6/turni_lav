@@ -16,6 +16,23 @@ void main() async {
     await windowManager.ensureInitialized();
     windowManager.waitUntilReadyToShow().then((_) async {
       await windowManager.setSize(const Size(534, 950));
+      await windowManager.setTitle('Turni Lavoro');
+            // Ottieni info sullo schermo principale
+      final display = await windowManager.getBounds();
+      final screenHeight = display.size.height;
+
+      // Imposta la posizione in base all'altezza dello schermo
+      double topOffset;
+      if (screenHeight >= 1080 && screenHeight < 1440) {
+        topOffset = 50;
+      } else if (screenHeight >= 1440 && screenHeight < 2160) {
+        topOffset = 150;
+      } else if (screenHeight >= 2160) {
+        topOffset = 300;
+      } else {
+        topOffset = 20; // fallback per schermi più piccoli
+      }
+      await windowManager.setPosition(Offset(100, topOffset));
     });
   }
   runApp(const MyApp());
