@@ -797,12 +797,12 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               const SizedBox(height: 20),
               Text(
-                'Copyright (C) 2025  StefC6\nQuesto è un programma a pagamento: non puoi ridistribuirlo e/o modificarlo. ',
+                'Copyright (C) 2025  Stefano Lo Casto\nQuesto programma è un software libero: puoi ridistribuirlo e/o modificarlo secondo i termini della GNU General Public License pubblicata dalla Free Software Foundation, sia la versione 3 della licenza che una versione successiva. Questo programma è distribuito nella speranza che possa essere utile, ma SENZA ALCUNA GARANZIA; nemmeno la garanzia implicita di COMMERCIABILITÀ o IDONEITÀ PER UNO SCOPO PARTICOLARE. Per maggiori dettagli, consultare la GNU General Public License. È possibile trovare una copia della licenza all\'indirizzo <https://www.gnu.org/licenses/>.',
                 style: TextStyle(fontStyle: FontStyle.italic, fontSize: 15),
               ),
               const SizedBox(height: 20),
               Text(
-                'This program is paid software: you cannot redistribute it and/or modify it.',
+                'Copyright (C) 2025  Stefano Lo Casto\nThis program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You can find a copy of the license at <https://www.gnu.org/licenses/>. ',
                 style: TextStyle(fontStyle: FontStyle.italic, fontSize: 15),
               ),
             ],
