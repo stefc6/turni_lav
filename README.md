@@ -1,6 +1,6 @@
 # turni_lav
 
-Un'applicazione per le gestione dei propri turni lavorativi (attualmente presenta solo supporto completo ai dipendenti GTT. Se usato per altri ambiti lavorativi potrebbe mancare in funzionalità).
+Un'applicazione per le gestione dei propri turni lavorativi (attualmente presenta solo supporto completo ai dipendenti GTT. Se usato per altri ambiti lavorativi potrebbe mancare in funzionalità specifiche).
 
 
 This project is a starting point for a Flutter application.
