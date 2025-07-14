@@ -2,14 +2,24 @@
 
 Un'applicazione per le gestione dei propri turni lavorativi (attualmente presenta solo supporto completo ai dipendenti GTT. Se usato per altri ambiti lavorativi potrebbe mancare in funzionalità specifiche).
 
+# Funzionalità in arrivo
 
-This project is a starting point for a Flutter application.
+- Straordinari dell'anno precedente
+- Notifiche locali
+- Sincronizzazione con il calendario
+- Backup Google CLoud
+- iOS Release
+- Backup iCloud
+- Setup per conoscere l'app (schermata benvenuto e guida all'utilizzo)
 
-A few resources to get you started if this is your first Flutter project:
+!! Interfaccia e funzionalità possono dare problemi trattandosi di una beta !!
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+# Piattaforme
+- Android (Disponibile - in sviluppo)
+- Windows (Disponibile - in sviluppo)
+- Linux (Disponibile - in sviluppo)
+- iOS (In arrivo)
+- macOS (In arrivo)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+Questo è un progetto Flutter
