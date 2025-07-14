@@ -7,7 +7,7 @@ Un'applicazione per le gestione dei propri turni lavorativi (attualmente present
 - Straordinari dell'anno precedente
 - Notifiche locali
 - Sincronizzazione con il calendario
-- Backup Google CLoud
+- Backup Google Drive
 - iOS Release
 - Backup iCloud
 - Setup per conoscere l'app (schermata benvenuto e guida all'utilizzo)
