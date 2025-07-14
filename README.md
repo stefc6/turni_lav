@@ -27,11 +27,17 @@ __!! Interfaccia e funzionalità possono dare problemi trattandosi di una beta !
 
 
 # Piattaforme
-- Android (Disponibile - in sviluppo)
-- Windows (Disponibile - in sviluppo)
-- Linux (Disponibile - in sviluppo)
-- iOS (In arrivo)
-- macOS (In arrivo)
+- Android  (Disponibile - in sviluppo)
+- Windows  (Disponibile - in sviluppo)
+- Linux  (Disponibile - in sviluppo)
+- iOS  (In arrivo)
+- macOS  (In arrivo)
 
 ---
 Questo è un progetto Flutter
+
+---
+Copyright (C) 2025  Stefano Lo Casto <br/>Questo programma è un software libero: puoi ridistribuirlo e/o modificarlo secondo i termini della GNU General Public License pubblicata dalla Free Software Foundation, sia la versione 3 della licenza che una versione successiva. Questo programma è distribuito nella speranza che possa essere utile, ma SENZA ALCUNA GARANZIA; nemmeno la garanzia implicita di COMMERCIABILITÀ o IDONEITÀ PER UNO SCOPO PARTICOLARE. Per maggiori dettagli, consultare la GNU General Public License. È possibile trovare una copia della licenza all\'indirizzo <https://www.gnu.org/licenses/>.
+
+Copyright (C) 2025  Stefano Lo Casto<br/>This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You can find a copy of the license at <https://www.gnu.org/licenses/>.
+
