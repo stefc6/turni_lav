@@ -914,12 +914,28 @@ class _MyHomePageState extends State<MyHomePage> {
                           fontSize: 18,
                         ),
                       ),
-                      const Expanded(
-                        child: Text(
-                          ' Ferie Disponibili:',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'Ferie Disponibili: ',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: Theme.of(context).textTheme.bodyLarge?.color
+                                ),
+                              ),
+                              TextSpan(
+                                text: '(+FR anno precedente)',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  color: Theme.of(context).textTheme.bodyLarge?.color,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),

@@ -1,12 +1,12 @@
 plugins {
-    id("com.android.application")
+    id("com.turni.lav")
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
 
 android {
-    namespace = "com.example.turni_gtt"
+    namespace = "com.turni.lav"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
 
@@ -24,8 +24,8 @@ android {
         applicationId = "com.example.turni_gtt"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        minSdk = 27
+        targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
