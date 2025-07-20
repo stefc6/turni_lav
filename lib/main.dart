@@ -847,6 +847,38 @@ class _MyHomePageState extends State<MyHomePage> {
                     });
                     _aggiornaRiposoCount(); // Aggiorna contatore quando cambia anno
                   },
+                  onYearTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text('Seleziona Anno'),
+                          content: SizedBox(
+                            width: 200,
+                            height: 600,
+                            child: YearPicker(
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2050),
+                              selectedDate: DateTime(_summaryFocusedYear),
+                              onChanged: (DateTime dateTime) {
+                                Navigator.pop(context);
+                                setState(() {
+                                  _summaryFocusedYear = dateTime.year;
+                                });
+                                _aggiornaRiposoCount(); // Aggiorna contatore quando cambia anno
+                              },                              
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('Chiudi'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
                 ),
               ),
               if (_elementVisibility['Straordinari (Ore)'] ?? true) ...[
@@ -3141,10 +3173,13 @@ class MonthSwitcher extends StatelessWidget {
 class YearSwitcher extends StatelessWidget {
   final int focusedYear;
   final void Function(int delta) onYearChanged;
+  final VoidCallback? onYearTap; //Callback per il tap sull'anno
+
   const YearSwitcher({
     super.key,
     required this.focusedYear,
     required this.onYearChanged,
+    this.onYearTap, // Callback per il tap sull'anno
   });
 
   @override
@@ -3156,9 +3191,22 @@ class YearSwitcher extends StatelessWidget {
           icon: const Icon(Icons.chevron_left),
           onPressed: () => onYearChanged(-1),
         ),
-        Text(
-          focusedYear.toString(),
-          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(8),
+            onTap: onYearTap,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: Text(
+                focusedYear.toString(),
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
         ),
         IconButton(
           icon: const Icon(Icons.chevron_right),
