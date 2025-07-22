@@ -1,4 +1,4 @@
-package com.example.turni_gtt
+package com.turni.lav
 
 import io.flutter.embedding.android.FlutterActivity
 
