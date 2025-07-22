@@ -163,6 +163,7 @@ class _MyAppState extends State<MyApp> {
 // Variabili globali
 int _mancPrestAdeg = 0;
 int _ferieDisponibili = 30;
+bool _exitDialogShown = true;
 // FIne Variabili globali
 
 class MyHomePage extends StatefulWidget {
@@ -471,33 +472,40 @@ class _MyHomePageState extends State<MyHomePage> {
                   const SizedBox(width: 10),
                   const Text(
                     'Tema',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                    style: TextStyle(
+                      fontSize: 18, 
+                      fontWeight: FontWeight.w500
+                    ),
                   ),
                   const Spacer(),
-                  DropdownButton<ThemeMode>(
-                    value: widget.themeMode,
-                    items: const [
-                      DropdownMenuItem(
-                        value: ThemeMode.light,
-                        child: Text('Chiaro'),
-                      ),
-                      DropdownMenuItem(
-                        value: ThemeMode.dark,
-                        child: Text('Scuro'),
-                      ),
-                      DropdownMenuItem(
-                        value: ThemeMode.system,
-                        child: Text('Sistema'),
-                      ),
+                  DropdownMenu<ThemeMode>(
+                    initialSelection: widget.themeMode,
+                    dropdownMenuEntries: const [
+                      DropdownMenuEntry(value: ThemeMode.system, label: 'Sistema'),
+                      DropdownMenuEntry(value: ThemeMode.light, label: 'Chiaro'),
+                      DropdownMenuEntry(value: ThemeMode.dark, label: 'Scuro'),
                     ],
-                    onChanged: (ThemeMode? value) {
-                      if (value != null) {
-                        widget.onThemeChanged(value);
-                      }
+                    onSelected: (ThemeMode? value) {
+                      if (value != null) widget.onThemeChanged(value);
                     },
+                    width: 120, // puoi personalizzare la larghezza
+                    alignmentOffset: Offset(0, 0),
+                    menuStyle: MenuStyle(shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),),
+                    inputDecorationTheme: InputDecorationTheme(
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                    trailingIcon: Icon(Icons.expand_more_rounded),
+                    selectedTrailingIcon: Icon(Icons.expand_less_rounded),
                   ),
+                  
                 ],
               ),
+              // --- FINE: Tema ---
               const SizedBox(height: 32),
               // --- INIZIO: Personalizza turni ---
               Material(
@@ -538,7 +546,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(
-                      vertical: 18,
+                      vertical: 11,
                       horizontal: 10,
                     ),
                     child: Row(
@@ -552,7 +560,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         const Spacer(),
                         Icon(
-                          Icons.chevron_right,
+                          Icons.chevron_right_rounded,
                           color: Theme.of(context).iconTheme.color,
                         ),
                       ],
@@ -560,8 +568,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 32),
               // --- FINE: Personalizza turni ---
+              const SizedBox(height: 32),
               // --- INIZIO: Ore del turno ---
               Row(
                 children: [
@@ -631,6 +639,31 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
               // --- FINE: Ore del turno ---
+              SizedBox(height: 38),
+              // --- INIZIO: Tema ---
+              Row(
+                children: [
+                  SizedBox(width: 10),
+                  Text(
+                    'Conferma uscita',
+                    style: TextStyle(
+                      fontSize: 18, 
+                      fontWeight: FontWeight.w500
+                    ),
+                  ),
+                  Spacer(),
+                  Switch(
+                    value: _exitDialogShown,
+                    onChanged: (value) {
+                      setState(() {
+                        _exitDialogShown = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(width: 10),
+                ],
+              ),
+              // --- FINE: Tema ---
               const SizedBox(height: 32),
               // --- INIZIO: Backup ---
               Material(
@@ -650,7 +683,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(
-                      vertical: 18,
+                      vertical: 11,
                       horizontal: 10,
                     ),
                     child: Row(
@@ -664,7 +697,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         const Spacer(),
                         Icon(
-                          Icons.chevron_right,
+                          Icons.chevron_right_rounded,
                           color: Theme.of(context).iconTheme.color,
                         ),
                       ],
@@ -673,7 +706,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               // --- FINE: Backup ---
-              const SizedBox(height: 17),
+              const SizedBox(height: 32),
               // --- INIZIO: Reset ---
               Material(
                 color: Colors.transparent,
@@ -710,13 +743,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                   },
                                   child: const Text('Reset Calendario'),
                                 ),
-                                const SizedBox(height: 12),
+                                const SizedBox(height: 16),
                                 ElevatedButton(
                                   style: resetButtonStyle,
                                   onPressed: () {}, // Azione 2
                                   child: const Text('Reset Riepilogo'),
                                 ),
-                                const SizedBox(height: 12),
+                                const SizedBox(height: 16),
                                 ElevatedButton(
                                   style: resetButtonStyle,
                                   onPressed: () async {
@@ -727,7 +760,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     'Reset Turni personalizzati',
                                   ),
                                 ),
-                                const SizedBox(height: 12),
+                                const SizedBox(height: 16),
                                 ElevatedButton(
                                   style: resetButtonStyle,
                                   onPressed: () async {
@@ -752,7 +785,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(
-                      vertical: 18,
+                      vertical: 11,
                       horizontal: 10,
                     ),
                     child: Row(
@@ -781,6 +814,7 @@ class _MyHomePageState extends State<MyHomePage> {
       case DrawerSection.info:
         return Padding(
           padding: EdgeInsets.all(36),
+          child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -822,8 +856,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 'Copyright (C) 2025  Stefano Lo Casto\nThis program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You can find a copy of the license at <https://www.gnu.org/licenses/>. ',
                 style: TextStyle(fontStyle: FontStyle.italic, fontSize: 15),
               ),
+              SizedBox(height: 120),
             ],
-          ),
+          ),),
         );
       case DrawerSection.summary:
         // AGGIUNTA: YearSwitcher sopra il contenuto della schermata Riepilogo
@@ -1931,6 +1966,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ],
+              SizedBox(height: 120,)
             ],
           ),
         );
@@ -2283,7 +2319,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ),
                         const Spacer(),
-                        Icon(Icons.chevron_right, color: Colors.grey[700]),
+                        Icon(Icons.chevron_right_rounded, color: Colors.grey[700]),
                       ],
                     ),
                   ),
@@ -2477,18 +2513,19 @@ class _MyHomePageState extends State<MyHomePage> {
         statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
       ),
     );
-    // Imposta il colore della status bar UNA SOLA VOLTA all'avvio
-    // e non ad ogni rebuild della pagina
+    // Imposta il colore della status bar solo all'avvio e non ad ogni rebuild 
     return PopScope(
-      canPop: true,
-      onPopInvokedWithResult: (didPop, result) async {
+      canPop: false,
+      onPopInvokedWithResult: (bool didPop, dynamic result) async {
         if (didPop) return;
         if (_selectedSection != DrawerSection.calendar) {
           setState(() {
             _selectedSection = DrawerSection.calendar;
           });
         } else {
+          if (_exitDialogShown == true) {
           final shouldExit = await showDialog<bool>(
+            
             context: context,
             builder: (context) => AlertDialog(
               title: const Text('Conferma uscita'),
@@ -2506,7 +2543,9 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           );
           if (shouldExit == true) {
-            Navigator.of(context).maybePop();
+            SystemNavigator.pop(); // Chiude l'app
+          }} else if (_exitDialogShown == false) {
+            SystemNavigator.pop(); // Chiude l'app
           }
         }
       },
@@ -3147,7 +3186,7 @@ class MonthSwitcher extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         IconButton(
-          icon: const Icon(Icons.chevron_left),
+          icon: const Icon(Icons.chevron_left_rounded),
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(),
           onPressed: () => onMonthChanged(-1),
@@ -3159,7 +3198,7 @@ class MonthSwitcher extends StatelessWidget {
         ),
         const SizedBox(width: 4),
         IconButton(
-          icon: const Icon(Icons.chevron_right),
+          icon: const Icon(Icons.chevron_right_rounded),
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(),
           onPressed: () => onMonthChanged(1),
@@ -3188,7 +3227,7 @@ class YearSwitcher extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         IconButton(
-          icon: const Icon(Icons.chevron_left),
+          icon: const Icon(Icons.chevron_left_rounded),
           onPressed: () => onYearChanged(-1),
         ),
         Material(
@@ -3209,7 +3248,7 @@ class YearSwitcher extends StatelessWidget {
           ),
         ),
         IconButton(
-          icon: const Icon(Icons.chevron_right),
+          icon: const Icon(Icons.chevron_right_rounded),
           onPressed: () => onYearChanged(1),
         ),
       ],
@@ -3348,7 +3387,7 @@ class _PersonalizzaTurniDialogState extends State<_PersonalizzaTurniDialog> {
                               final nome = _nomiTurni[idx];
                               return ListTile(
                                 title: Text(nome),
-                                trailing: const Icon(Icons.chevron_right),
+                                trailing: const Icon(Icons.chevron_right_rounded),
                                 onTap: () {
                                   apriModificaTurno(
                                     nome: nome,
@@ -4703,15 +4742,15 @@ class _AnteprimaGiornataDialog extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            _buildField('Turno', turno, bold: true),
-            const SizedBox(height: 8),
+            const SizedBox(height: 20),
+            _buildField('Turno', turno, bold: false),
+            const SizedBox(height: 15),
             _buildField(
               'Orario',
               inizio.isNotEmpty && fine.isNotEmpty ? '$inizio - $fine' : '--',
               bold: false,
             ),
-            const SizedBox(height: 7), // spaziatura ridotta tra Orario e Luogo
+            const SizedBox(height: 15),
             _buildField(
               'Luogo',
               (luogoIniziale.isEmpty && luogoFinale.isEmpty)
@@ -4721,11 +4760,12 @@ class _AnteprimaGiornataDialog extends StatelessWidget {
                         : (luogoIniziale + luogoFinale)),
               bold: false,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 15),
             _buildField('Straordinario', straordinario, bold: false),
-            const SizedBox(height: 8),
+            const SizedBox(height: 15),
             // Riga Pause con icona info
-            Row(
+            SizedBox(height: 40, 
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
@@ -4821,8 +4861,8 @@ class _AnteprimaGiornataDialog extends StatelessWidget {
                   },
                 ),
               ],
-            ),
-            const SizedBox(height: 8),
+            ),),
+            SizedBox(height: 3),
             _buildField('Note', note.isNotEmpty ? note : '-', bold: false),
             const SizedBox(height: 24),
             Row(
@@ -5340,8 +5380,7 @@ Future<void> resetTotale(BuildContext context) async {
         ),
       );
       await Future.delayed(const Duration(seconds: 1));
-      SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-      exit(0);
+      SystemNavigator.pop();
     }
   }
 }
