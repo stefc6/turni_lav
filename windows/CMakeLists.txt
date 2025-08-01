@@ -5,7 +5,7 @@ set(WINDOWS_ICON_PATH "resources/app_icon.ico")
 
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
-set(BINARY_NAME "turni_gtt")
+set(BINARY_NAME "turni_lav")
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.
