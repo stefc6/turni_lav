@@ -301,9 +301,13 @@ class _MyHomePageState extends State<MyHomePage> {
     final current = _straordinarioEditValue ?? _straordinarioHHmm;
     final isNeg = current.startsWith('-');
     final time = current.replaceFirst('-', '');
-    final parts = time.split(':');
-    int ore = parts.isNotEmpty ? int.tryParse(parts[0]) ?? 0 : 0;
-    int minuti = parts.length > 1 ? int.tryParse(parts[1]) ?? 0 : 0;
+    int ore = 0;
+    int minuti = 0;
+    if (time != '--:--') {
+      final parts = time.split(':');
+      ore = parts.isNotEmpty ? int.tryParse(parts[0]) ?? 0 : 0;
+      minuti = parts.length > 1 ? int.tryParse(parts[1]) ?? 0 : 0;
+    }
     bool neg = isNeg;
 
     void updateStraordinario(int newOre, int newMinuti) {
@@ -478,30 +482,45 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                   const Spacer(),
-                  DropdownMenu<ThemeMode>(
-                    initialSelection: widget.themeMode,
-                    dropdownMenuEntries: const [
-                      DropdownMenuEntry(value: ThemeMode.system, label: 'Sistema'),
-                      DropdownMenuEntry(value: ThemeMode.light, label: 'Chiaro'),
-                      DropdownMenuEntry(value: ThemeMode.dark, label: 'Scuro'),
-                    ],
-                    onSelected: (ThemeMode? value) {
-                      if (value != null) widget.onThemeChanged(value);
-                    },
-                    width: 120, // puoi personalizzare la larghezza
-                    alignmentOffset: Offset(0, 0),
-                    menuStyle: MenuStyle(shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                  Stack(
+                    children: [
+                      DropdownMenu<ThemeMode>(
+                        initialSelection: widget.themeMode,
+                        dropdownMenuEntries: const [
+                          DropdownMenuEntry(value: ThemeMode.system, label: 'Sistema'),
+                          DropdownMenuEntry(value: ThemeMode.light, label: 'Chiaro'),
+                          DropdownMenuEntry(value: ThemeMode.dark, label: 'Scuro'),
+                        ],
+                        onSelected: (ThemeMode? value) {
+                          if (value != null) widget.onThemeChanged(value);
+                        },
+                        width: 120,
+                        enableFilter: false,
+                        enableSearch: false,
+                        inputDecorationTheme: InputDecorationTheme(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                        trailingIcon: Icon(Icons.expand_more_rounded),
+                        selectedTrailingIcon: Icon(Icons.expand_less_rounded),
                       ),
-                    ),),
-                    inputDecorationTheme: InputDecorationTheme(
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                    trailingIcon: Icon(Icons.expand_more_rounded),
-                    selectedTrailingIcon: Icon(Icons.expand_less_rounded),
-                  ),
+                      // Blocca solo la parte di testo (80% a sinistra)
+                      Positioned.fill(
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: FractionallySizedBox(
+                            widthFactor: 0.6, // Copre solo la parte sinistra
+                            child: IgnorePointer(
+                              ignoring: false,
+                              child: Container(
+                                color: Colors.transparent,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
                   
                 ],
               ),
@@ -862,8 +881,6 @@ class _MyHomePageState extends State<MyHomePage> {
         );
       case DrawerSection.summary:
         // AGGIUNTA: YearSwitcher sopra il contenuto della schermata Riepilogo
-        final customColors = Theme.of(context).extension<CustomColors>();
-        final mpaColor = customColors?.mpaColor ?? Colors.red;
         return SingleChildScrollView(
           child: Column(
             children: [
@@ -1048,13 +1065,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                 );
                               },
                             );
-                            if (nuovoValore != null) {
-                              setState(() {
-                                _ferieDisponibili = nuovoValore;
-                              });
-                              await _saveFerieDisponibili(_ferieDisponibili);
-                            }
-                          },
+                            setState(() {
+                              _ferieDisponibili = nuovoValore ?? 0;
+                            });
+                            await _saveFerieDisponibili(_ferieDisponibili);
+                                                    },
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 6,
@@ -1847,7 +1862,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         'MPA',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(200, 215, 61, 51),
+                          color: Colors.red,
                           fontSize: 18,
                         ),
                       ),
@@ -1858,7 +1873,6 @@ class _MyHomePageState extends State<MyHomePage> {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
-                            color: mpaColor,
                           ),
                         ),
                       ),
@@ -1904,11 +1918,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                 );
                               },
                             );
-                            if (nuovoValore != null) {
-                              setState(() {
-                                _mancPrestAdeg = nuovoValore;
-                              });
-                            }
+                            setState(() {
+                              _mancPrestAdeg = nuovoValore ?? 0;
+                            });
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(
@@ -1984,6 +1996,83 @@ class _MyHomePageState extends State<MyHomePage> {
               child: MonthSwitcher(
                 focusedMonth: _calendarFocusedMonth,
                 onMonthChanged: _onCalendarMonthChanged,
+                onMonthTap: () async {
+                  int tempYear = _calendarFocusedMonth.year;
+                  int tempMonth = _calendarFocusedMonth.month;
+                
+                  final result = await showDialog<DateTime>(
+                    context: context,
+                    builder: (dialogContext) {
+                      return StatefulBuilder(
+                        builder: (context, setState) => AlertDialog(
+                          title: const Text('Seleziona mese e anno'),
+                          content: SizedBox(
+                            width: 300,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.chevron_left),
+                                      onPressed: () {
+                                        if (tempYear > 2000) setState(() => tempYear--);
+                                      },
+                                    ),
+                                    Text(
+                                      tempYear.toString(),
+                                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.chevron_right),
+                                      onPressed: () {
+                                        if (tempYear < 2100) setState(() => tempYear++);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                                Wrap(
+                                  spacing: 6,
+                                  runSpacing: 6,
+                                  children: List.generate(12, (i) {
+                                    final m = i + 1;
+                                    return ChoiceChip(
+                                      label: Text(DateFormat.MMM('it_IT').format(DateTime(2000, m))),
+                                      selected: tempMonth == m,
+                                      onSelected: (_) {
+                                        setState(() => tempMonth = m);
+                                      },
+                                    );
+                                  }),
+                                ),
+                              ],
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(dialogContext),
+                              child: const Text('Annulla'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(dialogContext, DateTime(tempYear, tempMonth));
+                              },
+                              child: const Text('Conferma'),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                
+                  if (result != null) {
+                    setState(() {
+                      _calendarFocusedMonth = result;
+                    });
+                  }
+                },
               ),
             ),
             Expanded(
@@ -2425,8 +2514,12 @@ class _MyHomePageState extends State<MyHomePage> {
     final dataKey =
         '${_selectedDate.year.toString().padLeft(4, '0')}-${_selectedDate.month.toString().padLeft(2, '0')}-${_selectedDate.day.toString().padLeft(2, '0')}';
     final turno = _selectedTurnoName ?? '';
-    final durataStr = _mediaOrariaString;
-    final straordinarioStr = _straordinarioEditValue ?? _straordinarioHHmm;
+    final durataStr = _durataTurnoSelezionato != null
+      ? '${_durataTurnoSelezionato!.inHours.toString().padLeft(2, '0')}:${(_durataTurnoSelezionato!.inMinutes % 60).toString().padLeft(2, '0')}'
+      : '${oreDiLavoroPredefinite.inHours.toString().padLeft(2, '0')}:${(oreDiLavoroPredefinite.inMinutes % 60).toString().padLeft(2, '0')}';
+    final straordinarioStr = (_straordinarioEditValue != null && _straordinarioEditValue!.isNotEmpty)
+      ? _straordinarioEditValue!
+      : _straordinarioHHmm;
     final pauseList = _pauseNonRetribuite.map((p) {
       final diff = p['inizio'] != null && p['fine'] != null
           ? _calcolaDiff(p['inizio'], p['fine'])
@@ -2908,6 +3001,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _luogoController.text = dati['luogoIniziale'] ?? '';
       _luogoFinaleController.text = dati['luogoFinale'] ?? '';
       _noteController.text = dati['note'] ?? '';
+      _pauseNonRetribuite = [];
       // Parsing delle pause non retribuite
       final pauseField = dati['pauseField'] ?? '';
       if (pauseField.startsWith('Tause[')) {
@@ -3174,9 +3268,11 @@ class _TimePickerBoxState extends State<_TimePickerBox> {
 class MonthSwitcher extends StatelessWidget {
   final DateTime focusedMonth;
   final void Function(int delta) onMonthChanged;
+  final VoidCallback? onMonthTap; //Callback per il tap sul mese
   const MonthSwitcher({
     required this.focusedMonth,
     required this.onMonthChanged,
+    this.onMonthTap,
     super.key,
   });
 
@@ -3192,9 +3288,16 @@ class MonthSwitcher extends StatelessWidget {
           onPressed: () => onMonthChanged(-1),
         ),
         const SizedBox(width: 4),
-        Text(
-          DateFormat.yMMMM('it_IT').format(focusedMonth),
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        InkWell(
+          borderRadius: BorderRadius.circular(6),
+          onTap: onMonthTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            child: Text(
+              DateFormat.yMMMM('it_IT').format(focusedMonth),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
         ),
         const SizedBox(width: 4),
         IconButton(
@@ -3567,6 +3670,11 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
       insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: 400,
+            maxHeight: MediaQuery.of(context).size.height * 0.7,
+          ),
         child: SizedBox(
           height: 550, // aumentato di 5px rispetto a 400
           child: Stack(
@@ -3647,7 +3755,7 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
                               onTap: () => _pickTime(true),
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
-                                  vertical: 16,
+                                  vertical: 12,
                                 ),
                                 decoration: BoxDecoration(
                                   color: Theme.of(context).colorScheme.primary,
@@ -3658,7 +3766,7 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
                                   _inizio != null
                                       ? _inizio!.format(context)
                                       : '--:--',
-                                  style: const TextStyle(color: Colors.black),
+                                  style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ),
@@ -3669,7 +3777,7 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
                               onTap: () => _pickTime(false),
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
-                                  vertical: 16,
+                                  vertical: 12,
                                 ),
                                 decoration: BoxDecoration(
                                   color: Theme.of(context).colorScheme.primary,
@@ -3680,7 +3788,7 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
                                   _fine != null
                                       ? _fine!.format(context)
                                       : '--:--',
-                                  style: const TextStyle(color: Colors.black),
+                                  style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ),
@@ -3688,18 +3796,72 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
                         ],
                       ),
                       const SizedBox(height: 16),
-                      TextFormField(
-                        controller: _durataController,
-                        decoration: const InputDecoration(
-                          labelText: 'Durata (hh:mm)',
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (v) => (v == null || v.trim().isEmpty)
-                            ? 'Durata obbligatoria'
-                            : null,
-                        showCursor: true,
-                        readOnly: false,
-                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Durata (hh:mm)',
+                              style: TextStyle(
+                                color: Theme.of(context).brightness == Brightness.light
+                                ? Colors.black
+                                : Colors.white,
+                                fontSize: 15, 
+                                fontWeight: FontWeight.w500),
+                            ),
+                            const SizedBox(height: 6),
+                            SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                                backgroundColor: Theme.of(context).colorScheme.primary,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                              ),
+                              onPressed: () async {
+                                final now = TimeOfDay(
+                                  hour: _durataController.text.isNotEmpty
+                                      ? int.tryParse(_durataController.text.split(':')[0]) ?? 0
+                                      : 0,
+                                  minute: _durataController.text.isNotEmpty
+                                      ? int.tryParse(_durataController.text.split(':')[1]) ?? 0
+                                      : 0,
+                                );
+                                final picked = await showTimePicker(
+                                  context: context,
+                                  initialTime: now,
+                                  helpText: 'Seleziona durata turno',
+                                  builder: (context, child) {
+                                    return MediaQuery(
+                                      data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                                      child: child!,
+                                    );
+                                  },
+                                );
+                                if (picked != null) {
+                                  _durataController.text =
+                                      '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}';
+                                  setState(() {});
+                                }
+                              },
+                              child: Text(
+                                _durataController.text.isNotEmpty
+                                    ? _durataController.text
+                                    : '--:--',
+                                style: TextStyle(
+                                color: Theme.of(context).brightness == Brightness.light
+                                ? Colors.white
+                                : Colors.black,
+                                fontSize: 18, 
+                                fontWeight: FontWeight.bold),
+                              
+                              ),
+                            ),
+                          )
+                        ],
+                      ),),
                       const SizedBox(height: 16),
                       TextFormField(
                         controller: _luogoInizialeController,
@@ -3797,7 +3959,7 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
               ),
             ],
           ),
-        ),
+        ),),
       ),
     );
   }
@@ -3857,6 +4019,10 @@ class _ModificaPausaDialogState extends State<_ModificaPausaDialog> {
   Widget build(BuildContext context) {
     return Dialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+      child: ConstrainedBox(
+      constraints: BoxConstraints(
+        maxWidth: 550, // Limite larghezza come le altre finestre
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -3895,12 +4061,12 @@ class _ModificaPausaDialogState extends State<_ModificaPausaDialog> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 25),
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 'Durata: ${_calcolaDiff()}',
-                style: const TextStyle(fontWeight: FontWeight.w600),
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
               ),
             ),
             const SizedBox(height: 24),
@@ -3948,7 +4114,7 @@ class _ModificaPausaDialogState extends State<_ModificaPausaDialog> {
             ),
           ],
         ),
-      ),
+      ),),
     );
   }
 }
@@ -3978,15 +4144,35 @@ class _PauseDialogState extends State<_PauseDialog> {
   }
 
   void _addPausa(Map<String, String?> pausa) {
+    final inizio = pausa['inizio'];
+    final fine = pausa['fine'];
+    String durata = '--:--';
+    if (inizio != null && fine != null && inizio.isNotEmpty && fine.isNotEmpty) {
+      durata = _PauseDialogState._calcolaDiffStatic(inizio, fine);
+    }
     setState(() {
-      _pauseList.add(pausa);
+      _pauseList.add({
+        'inizio': inizio,
+        'fine': fine,
+        'durata': durata,
+      });
     });
     widget.onUpdate(_pauseList);
   }
-
+  
   void _updatePausa(int idx, Map<String, String?> pausa) {
+    final inizio = pausa['inizio'];
+    final fine = pausa['fine'];
+    String durata = '--:--';
+    if (inizio != null && fine != null && inizio.isNotEmpty && fine.isNotEmpty) {
+      durata = _PauseDialogState._calcolaDiffStatic(inizio, fine);
+    }
     setState(() {
-      _pauseList[idx] = pausa;
+      _pauseList[idx] = {
+        'inizio': inizio,
+        'fine': fine,
+        'durata': durata,
+      };
     });
     widget.onUpdate(_pauseList);
   }
@@ -4041,6 +4227,10 @@ class _PauseDialogState extends State<_PauseDialog> {
   Widget build(BuildContext context) {
     return Dialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+      child: ConstrainedBox(
+      constraints: BoxConstraints(
+        maxWidth: 550, // Limite larghezza come le altre finestre
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -4128,7 +4318,7 @@ class _PauseDialogState extends State<_PauseDialog> {
             ),
           ],
         ),
-      ),
+      ),)
     );
   }
 }
@@ -4695,6 +4885,7 @@ class _AnteprimaGiornataDialog extends StatelessWidget {
     final turno = data['turno'] ?? '';
     final inizio = data['inizio'] ?? '';
     final fine = data['fine'] ?? '';
+    final durata = data['durata'] ?? '';
     final straordinario = data['straordinario'] ?? '';
     final note = data['note'] ?? '';
     final luogoIniziale = data['luogoIniziale'] ?? '';
@@ -4713,6 +4904,38 @@ class _AnteprimaGiornataDialog extends StatelessWidget {
         }
       }
     }
+
+    String calcolaTotaleTurno(String durata, String straordinario, String pause) {
+    // Parsing durata
+    int durataMin = 0;
+    final durataParts = durata.split(':');
+    if (durataParts.length == 2) {
+      durataMin = (int.tryParse(durataParts[0]) ?? 0) * 60 + (int.tryParse(durataParts[1]) ?? 0);
+    }
+    // Parsing straordinario
+    int extraMin = 0;
+    bool neg = straordinario.startsWith('-');
+    final straord = straordinario.replaceFirst('-', '');
+    final extraParts = straord.split(':');
+    if (extraParts.length == 2) {
+      extraMin = (int.tryParse(extraParts[0]) ?? 0) * 60 + (int.tryParse(extraParts[1]) ?? 0);
+      if (neg) extraMin = -extraMin;
+    }
+    // Parsing pause
+    int pauseMin = 0;
+    final pauseParts = pause.split(':');
+    if (pauseParts.length == 2) {
+      pauseMin = (int.tryParse(pauseParts[0]) ?? 0) * 60 + (int.tryParse(pauseParts[1]) ?? 0);
+    }
+    // Calcolo totale
+    int totaleMin = durataMin + extraMin - pauseMin;
+    final sign = totaleMin < 0 ? '-' : '';
+    final absMin = totaleMin.abs();
+    final ore = absMin ~/ 60;
+    final min = absMin % 60;
+    return '$sign${ore.toString().padLeft(2, '0')}:${min.toString().padLeft(2, '0')}';
+  }
+  final totaleTurno = calcolaTotaleTurno(durata, straordinario, sommaPause);
 
     return Dialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
@@ -4745,6 +4968,8 @@ class _AnteprimaGiornataDialog extends StatelessWidget {
             const SizedBox(height: 20),
             _buildField('Turno', turno, bold: false),
             const SizedBox(height: 15),
+            _buildField('Totale del turno', totaleTurno, bold: true), // <--- AGGIUNTA
+            const SizedBox(height: 10),
             _buildField(
               'Orario',
               inizio.isNotEmpty && fine.isNotEmpty ? '$inizio - $fine' : '--',
@@ -4944,6 +5169,10 @@ class _AnteprimaGiornataVuotaDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+      child: ConstrainedBox(
+      constraints: BoxConstraints(
+        maxWidth: 550, // Limite larghezza come le altre finestre
+      ),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -5001,7 +5230,7 @@ class _AnteprimaGiornataVuotaDialog extends StatelessWidget {
             ),
           ],
         ),
-      ),
+      ),)
     );
   }
 }
@@ -5162,12 +5391,6 @@ Future<void> esportaBackup(BuildContext context) async {
       savePath = result;
     } else if (Platform.isAndroid) {
       String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
-      if (selectedDirectory == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Esportazione annullata.')),
-        );
-        return;
-      }
       savePath = '$selectedDirectory/backup_turni_gtt.json';
     } else {
       final dir = await getApplicationDocumentsDirectory();
