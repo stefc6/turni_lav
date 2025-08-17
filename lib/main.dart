@@ -2180,6 +2180,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 _selectedTag = parts.length > 5
                                     ? parts[5]
                                     : null;
+                                _straordinarioEditValue = null;
                               });
                             }
                           },
