@@ -758,6 +758,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   style: resetButtonStyle,
                                   onPressed: () async {
                                     await resetTurniPerGiornata(context);
+                                    if (!context.mounted) return;
                                     Navigator.of(context).pop();
                                   },
                                   child: const Text('Reset Calendario'),
@@ -773,6 +774,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   style: resetButtonStyle,
                                   onPressed: () async {
                                     await resetPersonalizzaTurni(context);
+                                    if (!context.mounted) return;
                                     Navigator.of(context).pop();
                                   },
                                   child: const Text(
@@ -2178,6 +2180,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 _selectedTag = parts.length > 5
                                     ? parts[5]
                                     : null;
+                                _straordinarioEditValue = null;
                               });
                             }
                           },
@@ -3642,6 +3645,7 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
     ].join('|');
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('turno_custom_$nome', data);
+    if (!mounted) return;
     Navigator.pop(
       context,
       true,
@@ -3652,6 +3656,7 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
     if (widget.nomeTurno == null) return;
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('turno_custom_${widget.nomeTurno}');
+    if (!mounted) return;
     Navigator.pop(context, true); // chiudi e segnala che serve refresh
   }
 
@@ -3891,7 +3896,7 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
                       StatefulBuilder(
                         builder: (context, setStateDropdown) =>
                             DropdownButtonFormField<String>(
-                              value: _selectedTag,
+                              initialValue: _selectedTag,
                               items: _tagOptions
                                   .map(
                                     (tag) => DropdownMenuItem(
@@ -4471,6 +4476,7 @@ class _CalendarScreenState extends State<_CalendarScreen> {
                                   await DayDataStorage.loadDayDataParsed(key);
                               if (dayData != null &&
                                   (dayData['turno']?.isNotEmpty ?? false)) {
+                                if (!context.mounted) return;
                                 showDialog(
                                   context: context,
                                   builder: (context) => _AnteprimaGiornataDialog(
@@ -4522,6 +4528,7 @@ class _CalendarScreenState extends State<_CalendarScreen> {
                                           key,
                                           '',
                                         );
+                                        if (!context.mounted) return;
                                         Navigator.pop(
                                           context,
                                         ); // chiudi anteprima
@@ -4531,6 +4538,7 @@ class _CalendarScreenState extends State<_CalendarScreen> {
                                   ),
                                 );
                               } else {
+                                if (!context.mounted) return;
                                 showDialog(
                                   context: context,
                                   builder: (context) =>
@@ -5378,11 +5386,12 @@ Future<void> esportaBackup(BuildContext context) async {
     if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
       final result = await FilePicker.platform.saveFile(
         dialogTitle: 'Scegli dove salvare il backup',
-        fileName: 'backup_turni_gtt.json',
+        fileName: 'backup_turni_lav.json',
         type: FileType.custom,
         allowedExtensions: ['json'],
       );
       if (result == null) {
+        if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Esportazione annullata.')),
         );
@@ -5391,17 +5400,19 @@ Future<void> esportaBackup(BuildContext context) async {
       savePath = result;
     } else if (Platform.isAndroid) {
       String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
-      savePath = '$selectedDirectory/backup_turni_gtt.json';
+      savePath = '$selectedDirectory/backup_turni_lav.json';
     } else {
       final dir = await getApplicationDocumentsDirectory();
-      savePath = '${dir.path}/backup_turni_gtt.json';
+      savePath = '${dir.path}/backup_turni_lav.json';
     }
     final file = File(savePath);
     await file.writeAsString(buffer.toString());
+    if (!context.mounted) return;
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text('Backup esportato in $savePath')));
   } catch (e) {
+    if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Errore durante l\'esportazione: $e')),
     );
@@ -5474,11 +5485,13 @@ Future<void> importaBackup(
         }
       }
     }
+    if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Backup importato con successo!')),
     );
     await onImportCompleteCallback();
   } catch (e) {
+    if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Errore durante l\'importazione: $e')),
     );
