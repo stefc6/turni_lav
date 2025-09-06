@@ -15,7 +15,7 @@ Un'applicazione per le gestione dei propri turni lavorativi (presenta funzionali
 
 
 # Funzionalità in arrivo
-- [ ] Straordinari dell'anno precedente
+- [x] Straordinari dell'anno precedente
 - [ ] Notifiche locali
 - [ ] Sincronizzazione con il calendario
 - [ ] Backup Google Drive
