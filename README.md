@@ -16,12 +16,13 @@ Un'applicazione per le gestione dei propri turni lavorativi (presenta funzionali
 
 # Funzionalità in arrivo
 - [x] Straordinari dell'anno precedente
+- [ ] Supporto multilingua
+- [ ] Setup per conoscere l'app (schermata benvenuto e guida all'utilizzo)
 - [ ] Notifiche locali
 - [ ] Sincronizzazione con il calendario
 - [ ] Backup Google Drive
 - [ ] iOS Release
 - [ ] Backup iCloud
-- [ ] Setup per conoscere l'app (schermata benvenuto e guida all'utilizzo)
 
 __!! Interfaccia e funzionalità possono dare problemi trattandosi di una beta !!__
 
