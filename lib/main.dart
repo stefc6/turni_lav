@@ -163,6 +163,7 @@ class _MyAppState extends State<MyApp> {
 
 // Variabili globali
 bool _exitDialogShown = true;
+bool _debugMode = true; // Variabile globale per la modalità debug
 // FIne Variabili globali
 
 class MyHomePage extends StatefulWidget {
@@ -657,31 +658,37 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               // --- FINE: Ore del turno ---
               SizedBox(height: 38),
-              // --- INIZIO: Tema ---
-              Row(
-                children: [
-                  SizedBox(width: 10),
-                  Text(
-                    'Conferma uscita',
-                    style: TextStyle(
-                      fontSize: 18, 
-                      fontWeight: FontWeight.w500
+              // --- INIZIO: Conferma uscita ---
+              if (Platform.isAndroid ||
+                  Platform.isIOS ||
+                  _debugMode == true) ...[
+                Row(
+                  children: [
+                    SizedBox(width: 10),
+                    Text(
+                      'Conferma uscita',
+                      style: TextStyle(
+                        fontSize: 18, 
+                        fontWeight: FontWeight.w500
+                      ),
                     ),
-                  ),
-                  Spacer(),
-                  Switch(
-                    value: _exitDialogShown,
-                    onChanged: (value) {
-                      setState(() {
-                        _exitDialogShown = value;
-                      });
-                    },
-                  ),
-                  const SizedBox(width: 10),
-                ],
-              ),
-              // --- FINE: Tema ---
+                    Spacer(),
+                    Switch(
+                      value: _exitDialogShown,
+                      onChanged: (value) async {
+                        setState(() {
+                          _exitDialogShown = value;
+                        });
+                        final prefs = await SharedPreferences.getInstance();
+                        await prefs.setBool('exitDialogShown', value);
+                      },
+                    ),
+                    const SizedBox(width: 10),
+                  ],
+                ),
+              // --- FINE: Conferma uscita ---
               const SizedBox(height: 32),
+              ],
               // --- INIZIO: Backup ---
               Material(
                 color: Colors.transparent,
@@ -880,6 +887,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: TextStyle(fontStyle: FontStyle.italic, fontSize: 15),
               ),
               SizedBox(height: 120),
+              Row(
+                children: [
+                  Text('Debug Mode'),
+                  Spacer(),
+                  Switch(
+                    value: _debugMode,
+                    onChanged: (value) {
+                      setState(() {
+                        _debugMode = value;
+                      });
+                    },
+                  ),
+              ],),
             ],
           ),),
         );
@@ -2508,6 +2528,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _loadOreDiLavoroPredefinite();
     _aggiornaRiposoCount();
     _loadElementVisibility(); // Carica le preferenze di visibilità all'avvio
+    _loadExitDialogPref();
   }
 
   Future<void> _loadOreDiLavoroPredefinite() async {
@@ -2577,6 +2598,13 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   
     return ferieDisp + ferieRimastePrec - ferieUsufr;
+  }
+
+  Future<void> _loadExitDialogPref() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _exitDialogShown = prefs.getBool('exitDialogShown') ?? true;
+    });
   }
 
   // Salva i dati della giornata (chiave fissa per la Home)
@@ -5524,6 +5552,8 @@ Future<void> esportaBackup(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     final allKeys = prefs.getKeys();
     final anniSet = <int>{};
+    // 1. Salva la preferenza exitDialogShown come primo valore
+    final exitDialogPref = prefs.getBool('exitDialogShown') ?? true;
 
     // Trova anni dai dati giornata
     for (final k in allKeys.where((k) => k.startsWith('daydata_'))) {
@@ -5579,6 +5609,7 @@ Future<void> esportaBackup(BuildContext context) async {
 
     // Costruisci la struttura JSON
     final backupJson = {
+      '§ExitDialogShown§': exitDialogPref,
       '§VariabiliAnnuali§': variabiliAnnuali,
       '§ImpostazioniDiVisualizzazione§': visMap,
       '§TurniPers§': turniPersMap,
@@ -5650,6 +5681,10 @@ Future<void> importaBackup(
 
     if (isJson) {
       // --- NUOVO FORMATO JSON ---
+      // Preferenza exitDialogShown
+      if (backupData.containsKey('§ExitDialogShown§')) {
+        await prefs.setBool('exitDialogShown', backupData['§ExitDialogShown§'] == true);
+      }
       // Variabili annuali
       final variabiliAnnuali = backupData['§VariabiliAnnuali§'] as Map<String, dynamic>? ?? {};
       if (variabiliAnnuali.isNotEmpty) {
