@@ -740,7 +740,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     final ButtonStyle resetButtonStyle =
                         ElevatedButton.styleFrom(
                           minimumSize: const Size(
-                            100,
+                            double.infinity,
                             48,
                           ), // larghezza, altezza
                           padding: const EdgeInsets.symmetric(
@@ -748,66 +748,75 @@ class _MyHomePageState extends State<MyHomePage> {
                             vertical: 12,
                           ),
                           textStyle: const TextStyle(fontSize: 18),
+                          alignment: Alignment.center,
                         );
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
                         title: const Text('Reset'),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                ElevatedButton(
-                                  style: resetButtonStyle,
-                                  onPressed: () async {
-                                    await resetTurniPerGiornata(context);
-                                    if (!context.mounted) return;
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('Reset Calendario'),
-                                ),
-                                const SizedBox(height: 16),
-                                ElevatedButton(
-                                  style: resetButtonStyle,
-                                  onPressed: () async {
-                                    await resetRiepilogo(context);
-                                    if (!context.mounted) return;
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('Reset Riepilogo'),
-                                ),
-                                const SizedBox(height: 16),
-                                ElevatedButton(
-                                  style: resetButtonStyle,
-                                  onPressed: () async {
-                                    await resetPersonalizzaTurni(context);
-                                    if (!context.mounted) return;
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text(
-                                    'Reset Turni personalizzati',
+                        content: SizedBox(
+                          width: 300,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [ 
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ElevatedButton(
+                                    style: resetButtonStyle,
+                                    onPressed: () async {
+                                      await resetTurniPerGiornata(context);
+                                      if (!context.mounted) return;
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Center(
+                                      child: Text('Reset Calendario', textAlign: TextAlign.center,),
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: 16),
-                                ElevatedButton(
-                                  style: resetButtonStyle,
-                                  onPressed: () async {
-                                    await resetTotale(context);
-                                  },
-                                  child: const Text('Reset Totale'),
-                                ),
-                              ],
-                            ),
-                          ],
+                                  const SizedBox(height: 16),
+                                  ElevatedButton(
+                                    style: resetButtonStyle,
+                                    onPressed: () async {
+                                      await resetRiepilogo(context);
+                                      if (!context.mounted) return;
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Center(
+                                    child: Text('Reset Riepilogo', textAlign: TextAlign.center,),
+                                  ),),
+                                  const SizedBox(height: 16),
+                                  ElevatedButton(
+                                    style: resetButtonStyle,
+                                    onPressed: () async {
+                                      await resetPersonalizzaTurni(context);
+                                      if (!context.mounted) return;
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Center(
+                                    child: Text(
+                                      'Reset Turni Pers.',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),),
+                                  const SizedBox(height: 16),
+                                  ElevatedButton(
+                                    style: resetButtonStyle,
+                                    onPressed: () async {
+                                      await resetTotale(context);
+                                    },
+                                    child: const Center(
+                                    child: Text('Reset App', textAlign: TextAlign.center,),
+                                  ),),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.of(context).pop(),
                             child: const Text('Annulla'),
                           ),
-                          // Qui puoi aggiungere il pulsante per eseguire il reset effettivo
                         ],
                       ),
                     );
@@ -2942,10 +2951,25 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                             ),
                             actions: [
-                              TextButton(
-                                onPressed: () => Navigator.of(context).pop(),
-                                child: const Text('Chiudi'),
-                              ),
+                              Row(
+                                children: [
+                                  TextButton(
+                                    onPressed: () async {
+                                      await resetVisibilitaRiepilogo(context);
+                                      await _loadElementVisibility();
+                                      if (!context.mounted) return;
+                                      setState(() {});
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Ripristina'),
+                                  ),
+                                  Spacer(),
+                                  TextButton(
+                                    onPressed: () => Navigator.of(context).pop(),
+                                    child: const Text('Chiudi'),
+                                  ),
+                                ]
+                              )
                             ],
                           ),
                         ),
@@ -3810,10 +3834,10 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
         child: ConstrainedBox(
           constraints: BoxConstraints(
             maxWidth: 400,
-            maxHeight: MediaQuery.of(context).size.height * 0.7,
+            maxHeight: MediaQuery.of(context).size.height * 0.8,
           ),
         child: SizedBox(
-          height: 550, // aumentato di 5px rispetto a 400
+          height: 510, // aumentato di 5px rispetto a 400
           child: Stack(
             children: [
               // Contenuto scrollabile
@@ -5065,14 +5089,18 @@ class _AnteprimaGiornataDialog extends StatelessWidget {
         final afterBracket = pauseField.substring(idx + 1);
         if (afterBracket.startsWith(';')) {
           sommaPause = afterBracket.substring(1).trim();
-          if (sommaPause.isEmpty) sommaPause = '-';
         }
       }
+    }
+    if (sommaPause.isEmpty || sommaPause == '-' || sommaPause == '--:--') {
+      sommaPause = '00:00';
     }
 
     // Funzione per sommare/ sottrarre due orari (hh:mm)
     String sommaOrari(String straordinario, String pause) {
       if (straordinario.isEmpty || straordinario == '--:--') return '--:--';
+      if (pause.isEmpty || pause == '--:--') pause = '00:00';
+      if (sommaPause.isEmpty || sommaPause == '-') sommaPause = '00:00';
       final neg = straordinario.startsWith('-');
       final straord = straordinario.replaceFirst('-', '');
       final sParts = straord.split(':');
@@ -5240,8 +5268,15 @@ class _AnteprimaGiornataDialog extends StatelessWidget {
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
+                        insetPadding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
                         title: const Text('Straordinari e Pause', style: TextStyle(fontSize: 24),),
-                              content: Column(
+                              content: SizedBox(
+                                width: 400, 
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Column(
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -5249,25 +5284,17 @@ class _AnteprimaGiornataDialog extends StatelessWidget {
                                   Row(
                                     children: [
                                       const Text(
-                                        'Straordinario (lordo senza pause): ',
+                                        'Straordinario: ',
                                         style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
                                       ),
-                                      Text(
-                                        straordinario,
-                                        style: const TextStyle(fontSize: 17),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 25),
-                                  Row(
-                                    children: [
-                                      const Text(
-                                        'Straordinario (netto delle pause): ',
-                                        style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
-                                      ),
-                                      Text(
-                                        sommaOrari(straordinario, sommaPause),
-                                        style: const TextStyle(fontSize: 17),
+                                      Expanded(
+                                        child: Text(
+                                          sommaOrari(straordinario, sommaPause),
+                                          style: const TextStyle(fontSize: 17),
+                                          maxLines: 2, // o più se vuoi
+                                          softWrap: true,
+                                          overflow: TextOverflow.visible,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -5305,8 +5332,11 @@ class _AnteprimaGiornataDialog extends StatelessWidget {
                                           },
                                         ),
                                       ),
-                          ],
-                        ),
+                                    ],
+                                  ),
+                                  ],
+                                ),
+                              ),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
@@ -5768,6 +5798,48 @@ Future<void> importaBackup(
 // --- FINE: Funzioni di backup/ripristino con prefissi corretti ---
 
 // --- Funzioni di Reset dell'applicazione ---
+
+Future<void> resetVisibilitaRiepilogo(BuildContext context) async {
+  final confermato = await showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Conferma reset visibilità'),
+      content: const Text(
+        'Vuoi ripristinare la visibilità predefinita degli elementi del riepilogo?',
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: const Text('Annulla'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: const Text('Conferma'),
+        ),
+      ],
+    ),
+  );
+  if (confermato == true) {
+    final prefs = await SharedPreferences.getInstance();
+    final allVisibilityTags = [
+      'Straordinari (Ore)',
+      'Ferie Disponibili',
+      'Ferie Rimaste',
+      ...MyHomePage.tagList,
+      'Mancate Prestazioni di Adeguamento',
+    ];
+    for (final tag in allVisibilityTags) {
+      await prefs.setBool('visibility_$tag', true);
+    }
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Impostazioni di visibilità del riepilogo ripristinate.'),
+        ),
+      );
+    }
+  }
+}
 
 Future<void> resetTurniPerGiornata(BuildContext context) async {
   final confermato = await showDialog<bool>(
