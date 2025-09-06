@@ -988,290 +988,173 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                 ),
               ],
-              // if (_elementVisibility['Ferie Disponibili'] ?? true) ...[
-              //   const SizedBox(height: 16),
-              //   Padding(
-              //     padding: const EdgeInsets.symmetric(horizontal: 16),
-              //     child: Row(
-              //       children: [
-              //         const Text(
-              //           'FD',
-              //           style: TextStyle(
-              //             fontWeight: FontWeight.bold,
-              //             color: Colors.red,
-              //             fontSize: 18,
-              //           ),
-              //         ),
-              //         const SizedBox(width: 8),
-              //         Expanded(
-              //           child: RichText(
-              //             text: TextSpan(
-              //               children: [
-              //                 TextSpan(
-              //                   text: 'Ferie Disponibili: ',
-              //                   style: TextStyle(
-              //                     fontSize: 18,
-              //                     fontWeight: FontWeight.w600,
-              //                     color: Theme.of(context).textTheme.bodyLarge?.color
-              //                   ),
-              //                 ),
-              //                 TextSpan(
-              //                   text: '(+FR anno precedente)',
-              //                   style: TextStyle(
-              //                     fontSize: 16,
-              //                     fontWeight: FontWeight.w400,
-              //                     color: Theme.of(context).textTheme.bodyLarge?.color,
-              //                   ),
-              //                 ),
-              //               ],
-              //             ),
-              //           ),
-              //         ),
-              //         Material(
-              //           color: Colors.transparent,
-              //           child: InkWell(
-              //             borderRadius: BorderRadius.circular(20),
-              //             onTap: () async {
-              //               final controller = TextEditingController(
-              //                 text: _ferieDisponibili.toString(),
-              //               );
-              //               int tempValue = _mancPrestAdeg;
-              //               int? nuovoValore = await showDialog<int>(
-              //                 context: context,
-              //                 builder: (context) {
-              //                   return AlertDialog(
-              //                     title: const Text('Seleziona un numero'),
-              //                     content: TextField(
-              //                       controller: controller,
-              //                       keyboardType: TextInputType.number,
-              //                       decoration: InputDecoration(
-              //                         labelText: 'Valore',
-              //                       ),
-              //                       onChanged: (val) {
-              //                         tempValue =
-              //                             int.tryParse(val) ?? tempValue;
-              //                       },
-              //                     ),
-              //                     actions: [
-              //                       TextButton(
-              //                         onPressed: () =>
-              //                             Navigator.pop(context), // Annulla
-              //                         child: const Text('Annulla'),
-              //                       ),
-              //                       TextButton(
-              //                         onPressed: () => Navigator.pop(
-              //                           context,
-              //                           tempValue,
-              //                         ), // Conferma
-              //                         child: const Text('OK'),
-              //                       ),
-              //                     ],
-              //                   );
-              //                 },
-              //               );
-              //               setState(() {
-              //                 _ferieDisponibili = nuovoValore ?? 0;
-              //               });
-              //               await _saveFerieDisponibili(_ferieDisponibili);
-              //                                   },
-              //             child: Container(
-              //               padding: const EdgeInsets.symmetric(
-              //                 horizontal: 6,
-              //                 vertical: 6,
-              //               ),
-              //               decoration: BoxDecoration(
-              //                 color: Theme.of(context).colorScheme.primary,
-              //                 borderRadius: BorderRadius.circular(38),
-              //               ),
-              //               child: Row(
-              //                 mainAxisSize: MainAxisSize.min,
-              //                 children: [
-              //                   Icon(
-              //                     Icons.edit,
-              //                     color:
-              //                         Theme.of(context).brightness ==
-              //                             Brightness.light
-              //                         ? Colors.white
-              //                         : Colors.black,
-              //                     size: 20,
-              //                   ),
-              //                 ],
-              //               ),
-              //             ),
-              //           ),
-              //         ),
-              //         const SizedBox(width: 8),
-              //         Container(
-              //           decoration: BoxDecoration(
-              //             color: Theme.of(
-              //               context,
-              //             ).colorScheme.primary, // Sfondo
-              //             borderRadius: BorderRadius.circular(
-              //               12,
-              //             ), // Bordo arrotondato
-              //           ),
-              //           padding: const EdgeInsets.symmetric(
-              //             horizontal: 12,
-              //             vertical: 4,
-              //           ), // Aggiungi padding se vuoi
-              //           child: Text(
-              //             '$_ferieDisponibili', // Sostituisci con il tuo testo/valore
-              //             style: TextStyle(
-              //               fontSize: 18,
-              //               color:
-              //                   Theme.of(context).brightness == Brightness.light
-              //                   ? Colors.white
-              //                   : Colors.black, // Colore testo
-              //               fontWeight: FontWeight.bold,
-              //             ),
-              //           ),
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ],
               if (_elementVisibility['Ferie Disponibili'] ?? true) ...[
                 const SizedBox(height: 16),
                 FutureBuilder<int>(
                   future: _loadFerieDisponibiliAnno(_summaryFocusedYear),
                   builder: (context, snapshot) {
                     final ferieAnno = snapshot.data ?? 30;
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Row(
-                        children: [
-                          const Text(
-                            'FD',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red,
-                              fontSize: 18,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: RichText(
-                              text: TextSpan(
+                    return FutureBuilder<int>(
+                      future: _calcolaFerieRimasteAnno(_summaryFocusedYear - 1),
+                      builder: (context, snapshotPrec) {
+                        final ferieRimastePrec = snapshotPrec.data ?? 0;
+                        return FutureBuilder<int>(
+                          future: _loadFerieUsufruiteAnno(_summaryFocusedYear - 1),
+                          builder: (context, snapshotUsufruitePrec) {
+                            final ferieUsufruitePrec = snapshotUsufruitePrec.data ?? 0;
+                            final ferieDaMostrare = ferieUsufruitePrec > 0 ? ferieRimastePrec : 0;
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              child: Row(
                                 children: [
-                                  TextSpan(
-                                    text: 'Ferie Disponibili: ',
+                                  const Text(
+                                    'FD',
                                     style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red,
                                       fontSize: 18,
-                                      fontWeight: FontWeight.w600,
-                                      color: Theme.of(context).textTheme.bodyLarge?.color
                                     ),
                                   ),
-                                  TextSpan(
-                                    text: '(+FR anno precedente)',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w400,
-                                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'Ferie Disponibili: ',
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w600,
+                                              color: Theme.of(context).textTheme.bodyLarge?.color
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: '(+FR anno precedente)',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w400,
+                                              color: Theme.of(context).textTheme.bodyLarge?.color,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(20),
+                                      onTap: () async {
+                                        final controller = TextEditingController(
+                                          text: ferieAnno.toString(),
+                                        );
+                                        int tempValue = ferieAnno;
+                                        int? nuovoValore = await showDialog<int>(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              title: const Text('Seleziona un numero'),
+                                              content: TextField(
+                                                controller: controller,
+                                                keyboardType: TextInputType.number,
+                                                decoration: const InputDecoration(
+                                                  labelText: 'Valore',
+                                                ),
+                                                onChanged: (val) {
+                                                  tempValue = int.tryParse(val) ?? tempValue;
+                                                },
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () => Navigator.pop(context), // Annulla
+                                                  child: const Text('Annulla'),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () => Navigator.pop(
+                                                    context,
+                                                    tempValue,
+                                                  ), // Conferma
+                                                  child: const Text('OK'),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                        if (nuovoValore != null) {
+                                          await _saveFerieDisponibiliAnno(_summaryFocusedYear, nuovoValore);
+                                          setState(() {});
+                                        }
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 6,
+                                          vertical: 6,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context).colorScheme.primary,
+                                          borderRadius: BorderRadius.circular(38),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(
+                                              Icons.edit,
+                                              color:
+                                                  Theme.of(context).brightness ==
+                                                          Brightness.light
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                              size: 20,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.primary, // Sfondo
+                                      borderRadius: BorderRadius.circular(
+                                        12,
+                                      ), // Bordo arrotondato
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 4,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          '$ferieAnno',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: Theme.of(context).brightness == Brightness.light
+                                                ? Colors.white
+                                                : Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          ' +$ferieDaMostrare',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Theme.of(context).brightness == Brightness.light
+                                                ? Colors.white
+                                                : Colors.black,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
-                            ),
-                          ),
-                          Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(20),
-                              onTap: () async {
-                                final controller = TextEditingController(
-                                  text: ferieAnno.toString(),
-                                );
-                                int tempValue = ferieAnno;
-                                int? nuovoValore = await showDialog<int>(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      title: const Text('Seleziona un numero'),
-                                      content: TextField(
-                                        controller: controller,
-                                        keyboardType: TextInputType.number,
-                                        decoration: const InputDecoration(
-                                          labelText: 'Valore',
-                                        ),
-                                        onChanged: (val) {
-                                          tempValue = int.tryParse(val) ?? tempValue;
-                                        },
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () => Navigator.pop(context), // Annulla
-                                          child: const Text('Annulla'),
-                                        ),
-                                        TextButton(
-                                          onPressed: () => Navigator.pop(
-                                            context,
-                                            tempValue,
-                                          ), // Conferma
-                                          child: const Text('OK'),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                                if (nuovoValore != null) {
-                                  await _saveFerieDisponibiliAnno(_summaryFocusedYear, nuovoValore);
-                                  setState(() {});
-                                }
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 6,
-                                  vertical: 6,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  borderRadius: BorderRadius.circular(38),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      Icons.edit,
-                                      color:
-                                          Theme.of(context).brightness ==
-                                                  Brightness.light
-                                              ? Colors.white
-                                              : Colors.black,
-                                      size: 20,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.primary, // Sfondo
-                              borderRadius: BorderRadius.circular(
-                                12,
-                              ), // Bordo arrotondato
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 4,
-                            ), // Aggiungi padding se vuoi
-                            child: Text(
-                              '$ferieAnno', // Mostra il valore per l'anno selezionato
-                              style: TextStyle(
-                                fontSize: 18,
-                                color:
-                                    Theme.of(context).brightness == Brightness.light
-                                    ? Colors.white
-                                    : Colors.black, // Colore testo
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                            );
+                          },
+                        );
+                      },
                     );
                   },
                 ),
@@ -2684,8 +2567,16 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<int> _calcolaFerieRimasteAnno(int year) async {
     final ferieDisp = await _loadFerieDisponibiliAnno(year);
     final ferieUsufr = await _loadFerieUsufruiteAnno(year);
-    final mpa = await _loadMancPrestAdegAnno(year);
-    return ferieDisp - ferieUsufr - mpa;
+  
+    int ferieRimastePrec = 0;
+    if (year > 2000) {
+      final ferieUsufruitePrec = await _loadFerieUsufruiteAnno(year - 1);
+      if (ferieUsufruitePrec > 0) {
+        ferieRimastePrec = await _calcolaFerieRimasteAnno(year - 1);
+      }
+    }
+  
+    return ferieDisp + ferieRimastePrec - ferieUsufr;
   }
 
   // Salva i dati della giornata (chiave fissa per la Home)
@@ -5902,7 +5793,7 @@ Future<void> resetRiepilogo(BuildContext context) async {
     builder: (context) => AlertDialog(
       title: const Text('Conferma reset riepilogo'),
       content: const Text(
-        'Vuoi ripristinare la visibilità predefinita degli elementi del riepilogo?',
+        'Vuoi ripristinare la visibilità predefinita degli elementi del riepilogo e azzerare tutte le ferie disponibili e le manc. prest. di adeguamento per tutti gli anni?',
       ),
       actions: [
         TextButton(
@@ -5918,7 +5809,7 @@ Future<void> resetRiepilogo(BuildContext context) async {
   );
   if (confermato == true) {
     final prefs = await SharedPreferences.getInstance();
-    // Lista di tutte le chiavi di visibilità
+    // Reset visibilità
     final allVisibilityTags = [
       'Straordinari (Ore)',
       'Ferie Disponibili',
@@ -5929,10 +5820,17 @@ Future<void> resetRiepilogo(BuildContext context) async {
     for (final tag in allVisibilityTags) {
       await prefs.setBool('visibility_$tag', true);
     }
-    if (context.mounted) { // Aggiorna la UI
+    // Reset ferie disponibili e mpa per tutti gli anni
+    final allKeys = prefs.getKeys();
+    for (final k in allKeys) {
+      if (k.startsWith('ferieDisponibili_') || k.startsWith('mancPrestAdeg_')) {
+        await prefs.remove(k);
+      }
+    }
+    if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Impostazioni di visibilità del riepilogo ripristinate.'),
+          content: Text('Impostazioni di visibilità e valori annuali del riepilogo ripristinati.'),
         ),
       );
     }
