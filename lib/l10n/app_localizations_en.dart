@@ -9,6 +9,9 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get language => 'Language';
+
+  @override
   String get app_title => 'Work Shifts';
 
   @override
@@ -69,7 +72,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get restore => 'Restore';
 
   @override
-  String get contacts => 'Contacts:';
+  String get restore_2 => 'Restore';
+
+  @override
+  String get backup_and_restore => 'Backup and Restore';
+
+  @override
+  String get contacts => 'Contacts: \n';
 
   @override
   String get email => 'E-Mail:';
@@ -152,10 +161,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get duration => 'Duration (hh:mm)';
 
   @override
+  String duration2(String duration2) {
+    return 'Duration: $duration2';
+  }
+
+  @override
   String get initial_place => 'Initial place';
 
   @override
   String get final_place => 'Final place';
+
+  @override
+  String get shift_duration_label => 'Shift duration:';
 
   @override
   String get shift_tag => 'Shift tag';
@@ -167,7 +184,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancel_shift => 'Cancel';
 
   @override
-  String get delete_shift => 'Delete';
+  String get delete_shift => 'Delete shift';
 
   @override
   String get edit_duration => 'Edit shift duration';
@@ -176,13 +193,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get edit_overtime => 'Edit overtime';
 
   @override
+  String get edit_summary => 'Edit summary';
+
+  @override
   String get overtime => 'Overtime';
+
+  @override
+  String get overtime_2 => 'Overtime: ';
 
   @override
   String get overtime_gross => 'Overtime (gross without breaks)';
 
   @override
   String get overtime_net => 'Overtime (net of breaks)';
+
+  @override
+  String get overtime_hours => 'Overtime (Hours)';
+
+  @override
+  String get overtime_hours_label => 'Overtime (Hours):';
+
+  @override
+  String get overtime_calendar_hours => 'Overtime hours:';
 
   @override
   String get no_breaks => 'No breaks recorded';
@@ -192,6 +224,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get breaks_total => 'Total breaks';
+
+  @override
+  String get breaks_total_label => 'Total breaks:';
+
+  @override
+  String get breaks_label => 'Breaks:';
 
   @override
   String get breaks_edit => 'Edit break';
@@ -206,7 +244,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get delete_break => 'Delete break';
 
   @override
+  String get delete_confirm => 'Confirm deletion';
+
+  @override
   String get delete_break_confirm => 'Are you sure you want to delete this break?';
+
+  @override
+  String get delete_day_data => 'Delete day data';
 
   @override
   String get notes => 'Additional notes';
@@ -231,6 +275,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get place => 'Place';
+
+  @override
+  String get overtime_breaks => 'Overtime and Breaks: ';
+
+  @override
+  String get overtime_breaks2 => 'Overtime and Breaks';
+
+  @override
+  String get overtime_breaks_info => 'Overtime and breaks details';
 
   @override
   String get notes_short => 'Notes';
@@ -289,7 +342,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get missed_performance_adequacy => 'Missed Performance Adjustments';
 
   @override
-  String get holidays_available_plus_prev => 'Available Holidays: (+FR previous year)';
+  String get holidays_available_plus_prev => 'Available Holidays: ';
+
+  @override
+  String get holidays_prev => '(+AH previous year)';
 
   @override
   String get holidays_left_label => 'Holidays Left:';
@@ -349,7 +405,16 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get reset_visibility_confirm => 'Do you want to restore the default visibility of the summary items?';
+  String get export_cancelled => 'Export cancelled.';
+
+  @override
+  String get element_visibility => 'Element visibility';
+
+  @override
+  String get where_to_save_backup => 'Choose where to save the backup';
+
+  @override
+  String get reset_visibility_confirm => 'Do you want to restore the default visibility of summary items and reset all available vacation and adjustment allowances for all years?';
 
   @override
   String get reset_calendar_confirm => 'Are you sure you want to delete all daily shift data?';
@@ -362,6 +427,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reset_app_confirm => 'Are you sure you want to delete all data and restart the app?';
+
+  @override
+  String get reset_app_confirm2 => 'This action will irreversibly delete ALL application data. Do you really want to proceed?';
 
   @override
   String get reset_visibility_done => 'Summary visibility settings restored.';
@@ -377,6 +445,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reset_app_done => 'All data has been deleted. The app will restart.';
+
+  @override
+  String get visibility_reset_confirm => 'Confirm visibility reset';
+
+  @override
+  String get confirm_reset => 'Confirm reset';
 
   @override
   String get data_saved => 'Data saved';
@@ -422,4 +496,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get clear_notes_label => 'Clear notes';
+
+  @override
+  String get attention => 'Attention!';
+
+  @override
+  String get proceed => 'Proceed';
+
+  @override
+  String get value => 'Value';
+
+  @override
+  String get monday => 'Mon';
+
+  @override
+  String get tuesday => 'Tue';
+
+  @override
+  String get wednesday => 'Wed';
+
+  @override
+  String get thursday => 'Thu';
+
+  @override
+  String get friday => 'Fri';
+
+  @override
+  String get saturday => 'Sat';
+
+  @override
+  String get sunday => 'Sun';
 }

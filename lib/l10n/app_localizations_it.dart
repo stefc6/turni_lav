@@ -9,6 +9,9 @@ class AppLocalizationsIt extends AppLocalizations {
   AppLocalizationsIt([String locale = 'it']) : super(locale);
 
   @override
+  String get language => 'Lingua';
+
+  @override
   String get app_title => 'Turni Lavoro';
 
   @override
@@ -69,7 +72,13 @@ class AppLocalizationsIt extends AppLocalizations {
   String get restore => 'Ripristina';
 
   @override
-  String get contacts => 'Contatti:';
+  String get restore_2 => 'Ripristino';
+
+  @override
+  String get backup_and_restore => 'Backup e Ripristino';
+
+  @override
+  String get contacts => 'Contatti: \n';
 
   @override
   String get email => 'E-Mail:';
@@ -152,10 +161,18 @@ class AppLocalizationsIt extends AppLocalizations {
   String get duration => 'Durata (hh:mm)';
 
   @override
+  String duration2(String duration2) {
+    return 'Durata: $duration2';
+  }
+
+  @override
   String get initial_place => 'Luogo iniziale';
 
   @override
   String get final_place => 'Luogo finale';
+
+  @override
+  String get shift_duration_label => 'Durata del turno:';
 
   @override
   String get shift_tag => 'Tag del turno';
@@ -167,7 +184,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get cancel_shift => 'Annulla';
 
   @override
-  String get delete_shift => 'Elimina';
+  String get delete_shift => 'Elimina turno';
 
   @override
   String get edit_duration => 'Modifica durata turno';
@@ -176,13 +193,28 @@ class AppLocalizationsIt extends AppLocalizations {
   String get edit_overtime => 'Modifica straordinario';
 
   @override
+  String get edit_summary => 'Modifica riepilogo';
+
+  @override
   String get overtime => 'Straordinario';
+
+  @override
+  String get overtime_2 => 'Straordinario: ';
 
   @override
   String get overtime_gross => 'Straordinario (lordo senza pause)';
 
   @override
   String get overtime_net => 'Straordinario (netto delle pause)';
+
+  @override
+  String get overtime_hours => 'Straordinari (Ore)';
+
+  @override
+  String get overtime_hours_label => 'Straordinari (Ore):';
+
+  @override
+  String get overtime_calendar_hours => 'Ore di straordinari:';
 
   @override
   String get no_breaks => 'Nessuna pausa registrata';
@@ -192,6 +224,12 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get breaks_total => 'Totale pause';
+
+  @override
+  String get breaks_total_label => 'Totale pause:';
+
+  @override
+  String get breaks_label => 'Pause:';
 
   @override
   String get breaks_edit => 'Modifica pausa';
@@ -206,7 +244,13 @@ class AppLocalizationsIt extends AppLocalizations {
   String get delete_break => 'Elimina pausa';
 
   @override
+  String get delete_confirm => 'Conferma eliminazione';
+
+  @override
   String get delete_break_confirm => 'Sei sicuro di voler eliminare questa pausa?';
+
+  @override
+  String get delete_day_data => 'Elimina dati giornata';
 
   @override
   String get notes => 'Note aggiuntive';
@@ -231,6 +275,15 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get place => 'Luogo';
+
+  @override
+  String get overtime_breaks => 'Straordinari e Pause: ';
+
+  @override
+  String get overtime_breaks2 => 'Straordinari e Pause';
+
+  @override
+  String get overtime_breaks_info => 'Dettaglio straordinari e pause';
 
   @override
   String get notes_short => 'Note';
@@ -289,7 +342,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get missed_performance_adequacy => 'Mancate Prestazioni di Adeguamento';
 
   @override
-  String get holidays_available_plus_prev => 'Ferie Disponibili: (+FR anno precedente)';
+  String get holidays_available_plus_prev => 'Ferie Disponibili: ';
+
+  @override
+  String get holidays_prev => '(+FR anno precedente)';
 
   @override
   String get holidays_left_label => 'Ferie Rimaste:';
@@ -349,7 +405,16 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get reset_visibility_confirm => 'Vuoi ripristinare la visibilità predefinita degli elementi del riepilogo?';
+  String get export_cancelled => 'Esportazione annullata.';
+
+  @override
+  String get element_visibility => 'Visibilità elementi';
+
+  @override
+  String get where_to_save_backup => 'Scegli dove salvare il backup';
+
+  @override
+  String get reset_visibility_confirm => 'Vuoi ripristinare la visibilità predefinita degli elementi del riepilogo e azzerare tutte le ferie disponibili e le manc. prest. di adeguamento per tutti gli anni?';
 
   @override
   String get reset_calendar_confirm => 'Sei sicuro di voler cancellare tutti i dati dei turni per giornata?';
@@ -361,7 +426,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get reset_custom_shifts_confirm => 'Sei sicuro di voler cancellare tutti i dati dei turni personalizzati?';
 
   @override
-  String get reset_app_confirm => 'Sei sicuro di voler cancellare tutti i dati e riavviare l\'app?';
+  String get reset_app_confirm => 'Sei sicuro di voler cancellare tutti i dati dell\'app?';
+
+  @override
+  String get reset_app_confirm2 => 'Questa operazione cancellerà TUTTI i dati dell\'applicazione in modo irreversibile. Vuoi davvero procedere?';
 
   @override
   String get reset_visibility_done => 'Impostazioni di visibilità del riepilogo ripristinate.';
@@ -377,6 +445,12 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get reset_app_done => 'Tutti i dati sono stati cancellati. L\'app verrà riavviata.';
+
+  @override
+  String get visibility_reset_confirm => 'Conferma reset visibilità';
+
+  @override
+  String get confirm_reset => 'Conferma reset';
 
   @override
   String get data_saved => 'Dati salvati';
@@ -422,4 +496,34 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get clear_notes_label => 'Cancella note';
+
+  @override
+  String get attention => 'Attenzione!';
+
+  @override
+  String get proceed => 'Procedi';
+
+  @override
+  String get value => 'Valore';
+
+  @override
+  String get monday => 'Lun';
+
+  @override
+  String get tuesday => 'Mar';
+
+  @override
+  String get wednesday => 'Mer';
+
+  @override
+  String get thursday => 'Gio';
+
+  @override
+  String get friday => 'Ven';
+
+  @override
+  String get saturday => 'Sab';
+
+  @override
+  String get sunday => 'Dom';
 }

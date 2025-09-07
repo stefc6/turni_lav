@@ -95,6 +95,12 @@ abstract class AppLocalizations {
     Locale('it')
   ];
 
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
   /// No description provided for @app_title.
   ///
   /// In en, this message translates to:
@@ -215,10 +221,22 @@ abstract class AppLocalizations {
   /// **'Restore'**
   String get restore;
 
+  /// No description provided for @restore_2.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get restore_2;
+
+  /// No description provided for @backup_and_restore.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup and Restore'**
+  String get backup_and_restore;
+
   /// No description provided for @contacts.
   ///
   /// In en, this message translates to:
-  /// **'Contacts:'**
+  /// **'Contacts: \n'**
   String get contacts;
 
   /// No description provided for @email.
@@ -377,6 +395,12 @@ abstract class AppLocalizations {
   /// **'Duration (hh:mm)'**
   String get duration;
 
+  /// Duration with placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'Duration: {duration2}'**
+  String duration2(String duration2);
+
   /// No description provided for @initial_place.
   ///
   /// In en, this message translates to:
@@ -388,6 +412,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Final place'**
   String get final_place;
+
+  /// No description provided for @shift_duration_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Shift duration:'**
+  String get shift_duration_label;
 
   /// No description provided for @shift_tag.
   ///
@@ -410,7 +440,7 @@ abstract class AppLocalizations {
   /// No description provided for @delete_shift.
   ///
   /// In en, this message translates to:
-  /// **'Delete'**
+  /// **'Delete shift'**
   String get delete_shift;
 
   /// No description provided for @edit_duration.
@@ -425,11 +455,23 @@ abstract class AppLocalizations {
   /// **'Edit overtime'**
   String get edit_overtime;
 
+  /// No description provided for @edit_summary.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit summary'**
+  String get edit_summary;
+
   /// No description provided for @overtime.
   ///
   /// In en, this message translates to:
   /// **'Overtime'**
   String get overtime;
+
+  /// No description provided for @overtime_2.
+  ///
+  /// In en, this message translates to:
+  /// **'Overtime: '**
+  String get overtime_2;
 
   /// No description provided for @overtime_gross.
   ///
@@ -442,6 +484,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Overtime (net of breaks)'**
   String get overtime_net;
+
+  /// No description provided for @overtime_hours.
+  ///
+  /// In en, this message translates to:
+  /// **'Overtime (Hours)'**
+  String get overtime_hours;
+
+  /// No description provided for @overtime_hours_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Overtime (Hours):'**
+  String get overtime_hours_label;
+
+  /// No description provided for @overtime_calendar_hours.
+  ///
+  /// In en, this message translates to:
+  /// **'Overtime hours:'**
+  String get overtime_calendar_hours;
 
   /// No description provided for @no_breaks.
   ///
@@ -460,6 +520,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Total breaks'**
   String get breaks_total;
+
+  /// No description provided for @breaks_total_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Total breaks:'**
+  String get breaks_total_label;
+
+  /// No description provided for @breaks_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Breaks:'**
+  String get breaks_label;
 
   /// No description provided for @breaks_edit.
   ///
@@ -485,11 +557,23 @@ abstract class AppLocalizations {
   /// **'Delete break'**
   String get delete_break;
 
+  /// No description provided for @delete_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm deletion'**
+  String get delete_confirm;
+
   /// No description provided for @delete_break_confirm.
   ///
   /// In en, this message translates to:
   /// **'Are you sure you want to delete this break?'**
   String get delete_break_confirm;
+
+  /// No description provided for @delete_day_data.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete day data'**
+  String get delete_day_data;
 
   /// No description provided for @notes.
   ///
@@ -538,6 +622,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Place'**
   String get place;
+
+  /// No description provided for @overtime_breaks.
+  ///
+  /// In en, this message translates to:
+  /// **'Overtime and Breaks: '**
+  String get overtime_breaks;
+
+  /// No description provided for @overtime_breaks2.
+  ///
+  /// In en, this message translates to:
+  /// **'Overtime and Breaks'**
+  String get overtime_breaks2;
+
+  /// No description provided for @overtime_breaks_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Overtime and breaks details'**
+  String get overtime_breaks_info;
 
   /// No description provided for @notes_short.
   ///
@@ -650,8 +752,14 @@ abstract class AppLocalizations {
   /// No description provided for @holidays_available_plus_prev.
   ///
   /// In en, this message translates to:
-  /// **'Available Holidays: (+FR previous year)'**
+  /// **'Available Holidays: '**
   String get holidays_available_plus_prev;
+
+  /// No description provided for @holidays_prev.
+  ///
+  /// In en, this message translates to:
+  /// **'(+AH previous year)'**
+  String get holidays_prev;
 
   /// No description provided for @holidays_left_label.
   ///
@@ -755,10 +863,28 @@ abstract class AppLocalizations {
   /// **'Error during import: {error}'**
   String backup_import_error(String error);
 
+  /// No description provided for @export_cancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Export cancelled.'**
+  String get export_cancelled;
+
+  /// No description provided for @element_visibility.
+  ///
+  /// In en, this message translates to:
+  /// **'Element visibility'**
+  String get element_visibility;
+
+  /// No description provided for @where_to_save_backup.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose where to save the backup'**
+  String get where_to_save_backup;
+
   /// No description provided for @reset_visibility_confirm.
   ///
   /// In en, this message translates to:
-  /// **'Do you want to restore the default visibility of the summary items?'**
+  /// **'Do you want to restore the default visibility of summary items and reset all available vacation and adjustment allowances for all years?'**
   String get reset_visibility_confirm;
 
   /// No description provided for @reset_calendar_confirm.
@@ -784,6 +910,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Are you sure you want to delete all data and restart the app?'**
   String get reset_app_confirm;
+
+  /// No description provided for @reset_app_confirm2.
+  ///
+  /// In en, this message translates to:
+  /// **'This action will irreversibly delete ALL application data. Do you really want to proceed?'**
+  String get reset_app_confirm2;
 
   /// No description provided for @reset_visibility_done.
   ///
@@ -814,6 +946,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'All data has been deleted. The app will restart.'**
   String get reset_app_done;
+
+  /// No description provided for @visibility_reset_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm visibility reset'**
+  String get visibility_reset_confirm;
+
+  /// No description provided for @confirm_reset.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm reset'**
+  String get confirm_reset;
 
   /// No description provided for @data_saved.
   ///
@@ -904,6 +1048,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clear notes'**
   String get clear_notes_label;
+
+  /// No description provided for @attention.
+  ///
+  /// In en, this message translates to:
+  /// **'Attention!'**
+  String get attention;
+
+  /// No description provided for @proceed.
+  ///
+  /// In en, this message translates to:
+  /// **'Proceed'**
+  String get proceed;
+
+  /// No description provided for @value.
+  ///
+  /// In en, this message translates to:
+  /// **'Value'**
+  String get value;
+
+  /// No description provided for @monday.
+  ///
+  /// In en, this message translates to:
+  /// **'Mon'**
+  String get monday;
+
+  /// No description provided for @tuesday.
+  ///
+  /// In en, this message translates to:
+  /// **'Tue'**
+  String get tuesday;
+
+  /// No description provided for @wednesday.
+  ///
+  /// In en, this message translates to:
+  /// **'Wed'**
+  String get wednesday;
+
+  /// No description provided for @thursday.
+  ///
+  /// In en, this message translates to:
+  /// **'Thu'**
+  String get thursday;
+
+  /// No description provided for @friday.
+  ///
+  /// In en, this message translates to:
+  /// **'Fri'**
+  String get friday;
+
+  /// No description provided for @saturday.
+  ///
+  /// In en, this message translates to:
+  /// **'Sat'**
+  String get saturday;
+
+  /// No description provided for @sunday.
+  ///
+  /// In en, this message translates to:
+  /// **'Sun'**
+  String get sunday;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

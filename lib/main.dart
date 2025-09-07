@@ -162,7 +162,7 @@ class _MyAppState extends State<MyApp> {
     );
 
     return MaterialApp(
-      title: 'Turni Lavoro',
+      title: "Turni Lavoro",
       debugShowCheckedModeBanner: true,
       theme: lightTheme,
       darkTheme: darkTheme,
@@ -171,7 +171,7 @@ class _MyAppState extends State<MyApp> {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: MyHomePage(
-        title: 'Turni Lavoro',
+        title: "Turni Lavoro",
         onThemeChanged: (mode) {
           setState(() {
             _themeMode = mode;
@@ -344,7 +344,7 @@ class _MyHomePageState extends State<MyHomePage> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: const Text('Modifica Straordinario'),
+              title: Text(AppLocalizations.of(context)!.edit_overtime,),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -413,8 +413,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text(
-                          'Straordinario: ',
+                        Text(
+                          AppLocalizations.of(context)!.overtime_2,
                           style: TextStyle(fontWeight: FontWeight.w600),
                         ),
                         if (neg)
@@ -437,7 +437,7 @@ class _MyHomePageState extends State<MyHomePage> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Annulla'),
+                  child: Text(AppLocalizations.of(context)!.cancel),
                 ),
                 TextButton(
                   onPressed: () {
@@ -447,7 +447,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     });
                     Navigator.pop(context);
                   },
-                  child: const Text('Salva'),
+                  child: Text(AppLocalizations.of(context)!.save),
                 ),
               ],
             );
@@ -473,13 +473,13 @@ class _MyHomePageState extends State<MyHomePage> {
   String _getAppBarTitle() {
     switch (_selectedSection) {
       case DrawerSection.settings:
-        return 'Impostazioni';
+        return AppLocalizations.of(context)!.settings;
       case DrawerSection.info:
-        return 'Informazioni';
+        return AppLocalizations.of(context)!.info;
       case DrawerSection.calendar:
         return '';
       case DrawerSection.summary:
-        return 'Riepilogo';
+        return AppLocalizations.of(context)!.summary;
       case DrawerSection.home:
         return widget.title;
     }
@@ -498,8 +498,8 @@ class _MyHomePageState extends State<MyHomePage> {
               Row(
                 children: [
                   const SizedBox(width: 10),
-                  const Text(
-                    'Lingua',
+                  Text(
+                    AppLocalizations.of(context)!.language,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
@@ -562,8 +562,8 @@ class _MyHomePageState extends State<MyHomePage> {
               Row(
                 children: [
                   const SizedBox(width: 10),
-                  const Text(
-                    'Tema',
+                  Text(
+                    AppLocalizations.of(context)!.theme,
                     style: TextStyle(
                       fontSize: 18, 
                       fontWeight: FontWeight.w500
@@ -574,10 +574,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: [
                       DropdownMenu<ThemeMode>(
                         initialSelection: widget.themeMode,
-                        dropdownMenuEntries: const [
-                          DropdownMenuEntry(value: ThemeMode.system, label: 'Sistema'),
-                          DropdownMenuEntry(value: ThemeMode.light, label: 'Chiaro'),
-                          DropdownMenuEntry(value: ThemeMode.dark, label: 'Scuro'),
+                        dropdownMenuEntries: [
+                          DropdownMenuEntry(value: ThemeMode.system, label: AppLocalizations.of(context)!.system),
+                          DropdownMenuEntry(value: ThemeMode.light, label: AppLocalizations.of(context)!.light),
+                          DropdownMenuEntry(value: ThemeMode.dark, label: AppLocalizations.of(context)!.dark),
                         ],
                         onSelected: (ThemeMode? value) {
                           if (value != null) widget.onThemeChanged(value);
@@ -658,8 +658,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     child: Row(
                       children: [
-                        const Text(
-                          'Personalizza turni',
+                        Text(
+                          AppLocalizations.of(context)!.customize_shifts,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w500,
@@ -682,8 +682,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   const SizedBox(width: 10),
                   Expanded(
-                    child: const Text(
-                      'Ore del turno',
+                    child: Text(
+                      AppLocalizations.of(context)!.shift_hours,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
@@ -710,7 +710,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       final picked = await showTimePicker(
                         context: context,
                         initialTime: now,
-                        helpText: 'Seleziona durata turno',
+                        helpText: AppLocalizations.of(context)!.select_duration,
                         builder: (context, child) {
                           return MediaQuery(
                             data: MediaQuery.of(
@@ -755,7 +755,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: [
                     SizedBox(width: 10),
                     Text(
-                      'Conferma uscita',
+                      AppLocalizations.of(context)!.exit_confirmation,
                       style: TextStyle(
                         fontSize: 18, 
                         fontWeight: FontWeight.w500
@@ -801,8 +801,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     child: Row(
                       children: [
-                        const Text(
-                          'Backup e Ripristino',
+                        Text(
+                          AppLocalizations.of(context)!.backup_and_restore,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w500,
@@ -830,12 +830,12 @@ class _MyHomePageState extends State<MyHomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Contatti:\n',
+                AppLocalizations.of(context)!.contacts,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
               ),
               Row(
                 children: [
-                  Text('E-Mail:', style: TextStyle(fontSize: 15)),
+                  Text(AppLocalizations.of(context)!.email, style: TextStyle(fontSize: 15)),
                   SizedBox(width: 8),
                   RichText(
                     text: TextSpan(
@@ -909,7 +909,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       context: context,
                       builder: (context) {
                         return AlertDialog(
-                          title: const Text('Seleziona Anno'),
+                          title: Text(AppLocalizations.of(context)!.select_year),
                           content: SizedBox(
                             width: 200,
                             height: 600,
@@ -929,7 +929,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.pop(context),
-                              child: const Text('Chiudi'),
+                              child: Text(AppLocalizations.of(context)!.close),
                             ),
                           ],
                         );
@@ -952,9 +952,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       child: Row(
                         children: [
-                          const Expanded(
+                          Expanded(
                             child: Text(
-                              'Straordinari (Ore):',
+                              AppLocalizations.of(context)!.overtime_hours_label,
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
@@ -1022,7 +1022,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       text: TextSpan(
                                         children: [
                                           TextSpan(
-                                            text: 'Ferie Disponibili: ',
+                                            text: AppLocalizations.of(context)!.holidays_available_plus_prev,
                                             style: TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.w600,
@@ -1030,7 +1030,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                             ),
                                           ),
                                           TextSpan(
-                                            text: '(+FR anno precedente)',
+                                            text: AppLocalizations.of(context)!.holidays_prev,
                                             style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w400,
@@ -1054,12 +1054,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                           context: context,
                                           builder: (context) {
                                             return AlertDialog(
-                                              title: const Text('Seleziona un numero'),
+                                              title: Text(AppLocalizations.of(context)!.select_number),
                                               content: TextField(
                                                 controller: controller,
                                                 keyboardType: TextInputType.number,
-                                                decoration: const InputDecoration(
-                                                  labelText: 'Valore',
+                                                decoration: InputDecoration(
+                                                  labelText: AppLocalizations.of(context)!.value,
                                                 ),
                                                 onChanged: (val) {
                                                   tempValue = int.tryParse(val) ?? tempValue;
@@ -1068,7 +1068,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                               actions: [
                                                 TextButton(
                                                   onPressed: () => Navigator.pop(context), // Annulla
-                                                  child: const Text('Annulla'),
+                                                  child: Text(AppLocalizations.of(context)!.cancel),
                                                 ),
                                                 TextButton(
                                                   onPressed: () => Navigator.pop(
@@ -1182,9 +1182,9 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                             ),
                             const SizedBox(width: 8),
-                            const Expanded(
+                            Expanded(
                               child: Text(
-                                'Ferie Rimaste:',
+                                AppLocalizations.of(context)!.holidays_left_label,
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
@@ -1239,9 +1239,9 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                             ),
                             const SizedBox(width: 8),
-                            const Expanded(
+                            Expanded(
                               child: Text(
-                                'Ferie Usufruite:',
+                                AppLocalizations.of(context)!.holidays_taken_label,
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
@@ -1290,9 +1290,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      const Expanded(
+                      Expanded(
                         child: Text(
-                          'Riposi:',
+                          AppLocalizations.of(context)!.rest_label,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
@@ -1318,7 +1318,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 12,
                                 vertical: 4,
-                              ), // Aggiungi padding se vuoi
+                              ), 
                               child: Text(
                                 '$_riposoCount', // Sostituisci con il tuo testo/valore
                                 style: TextStyle(
@@ -1351,9 +1351,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      const Expanded(
+                      Expanded(
                         child: Text(
-                          'Mancate Prestazioni:',
+                          AppLocalizations.of(context)!.missed_performance_label,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
@@ -1379,7 +1379,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 12,
                                 vertical: 4,
-                              ), // Aggiungi padding se vuoi
+                              ), 
                               child: Text(
                                 '${_tagCounts['Mancate prestazioni'] ?? 0}', // Sostituisci con il tuo testo/valore
                                 style: TextStyle(
@@ -1412,9 +1412,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      const Expanded(
+                      Expanded(
                         child: Text(
-                          'Festività Sopresse:',
+                          AppLocalizations.of(context)!.suppressed_holidays_label,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
@@ -1440,7 +1440,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 12,
                                 vertical: 4,
-                              ), // Aggiungi padding se vuoi
+                              ), 
                               child: Text(
                                 '${_tagCounts['Festività sopresse'] ?? 0}', // Sostituisci con il tuo testo/valore
                                 style: TextStyle(
@@ -1473,9 +1473,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      const Expanded(
+                      Expanded(
                         child: Text(
-                          'Sospensione Lavorativa:',
+                          AppLocalizations.of(context)!.work_suspension_label,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
@@ -1501,7 +1501,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 12,
                                 vertical: 4,
-                              ), // Aggiungi padding se vuoi
+                              ), 
                               child: Text(
                                 '${_tagCounts['Sospensione lavorativa'] ?? 0}', // Sostituisci con il tuo testo/valore
                                 style: TextStyle(
@@ -1534,9 +1534,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      const Expanded(
+                      Expanded(
                         child: Text(
-                          'Tempi Accessori:',
+                          AppLocalizations.of(context)!.accessory_times_label,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
@@ -1562,7 +1562,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 12,
                                 vertical: 4,
-                              ), // Aggiungi padding se vuoi
+                              ), 
                               child: Text(
                                 '${_tagCounts['Tempi accessori'] ?? 0}', // Sostituisci con il tuo testo/valore
                                 style: TextStyle(
@@ -1595,9 +1595,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      const Expanded(
+                      Expanded(
                         child: Text(
-                          'Permesso Retribuito:',
+                          AppLocalizations.of(context)!.paid_leave_label,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
@@ -1623,7 +1623,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 12,
                                 vertical: 4,
-                              ), // Aggiungi padding se vuoi
+                              ), 
                               child: Text(
                                 '${_tagCounts['Permesso retribuito'] ?? 0}', // Sostituisci con il tuo testo/valore
                                 style: TextStyle(
@@ -1656,9 +1656,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      const Expanded(
+                      Expanded(
                         child: Text(
-                          'Festività Infrasettimanali:',
+                          AppLocalizations.of(context)!.midweek_holidays_label,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
@@ -1684,7 +1684,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 12,
                                 vertical: 4,
-                              ), // Aggiungi padding se vuoi
+                              ), 
                               child: Text(
                                 '${_tagCounts['Festività infrasettimanali'] ?? 0}', // Sostituisci con il tuo testo/valore
                                 style: TextStyle(
@@ -1717,9 +1717,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      const Expanded(
+                      Expanded(
                         child: Text(
-                          'Malattia:',
+                          AppLocalizations.of(context)!.illness_label,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
@@ -1745,7 +1745,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 12,
                                 vertical: 4,
-                              ), // Aggiungi padding se vuoi
+                              ),
                               child: Text(
                                 '${_tagCounts['Malattia'] ?? 0}', // Sostituisci con il tuo testo/valore
                                 style: TextStyle(
@@ -1778,9 +1778,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      const Expanded(
+                      Expanded(
                         child: Text(
-                          '104:',
+                          AppLocalizations.of(context)!.law_104_label,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
@@ -1806,7 +1806,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 12,
                                 vertical: 4,
-                              ), // Aggiungi padding se vuoi
+                              ),
                               child: Text(
                                 '${_tagCounts['104'] ?? 0}', // Sostituisci con il tuo testo/valore
                                 style: TextStyle(
@@ -1839,9 +1839,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      const Expanded(
+                      Expanded(
                         child: Text(
-                          'Congedo Parentale:',
+                          AppLocalizations.of(context)!.parental_leave_label,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
@@ -1867,7 +1867,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 12,
                                 vertical: 4,
-                              ), // Aggiungi padding se vuoi
+                              ), 
                               child: Text(
                                 '${_tagCounts['Congedo parentale'] ?? 0}', // Sostituisci con il tuo testo/valore
                                 style: TextStyle(
@@ -1905,9 +1905,9 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                           ),
                           const SizedBox(width: 8),
-                          const Expanded(
+                          Expanded(
                             child: Text(
-                              'Mancate Prestazioni di Adeguamento:',
+                              AppLocalizations.of(context)!.missed_performance_adequacy_label,
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
@@ -1927,12 +1927,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
-                                      title: const Text('Seleziona un numero'),
+                                      title: Text(AppLocalizations.of(context)!.select_number),
                                       content: TextField(
                                         controller: controller,
                                         keyboardType: TextInputType.number,
-                                        decoration: const InputDecoration(
-                                          labelText: 'Valore',
+                                        decoration: InputDecoration(
+                                          labelText: AppLocalizations.of(context)!.value,
                                         ),
                                         onChanged: (val) {
                                           tempValue = int.tryParse(val) ?? tempValue;
@@ -1941,7 +1941,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       actions: [
                                         TextButton(
                                           onPressed: () => Navigator.pop(context), // Annulla
-                                          child: const Text('Annulla'),
+                                          child: Text(AppLocalizations.of(context)!.cancel),
                                         ),
                                         TextButton(
                                           onPressed: () => Navigator.pop(
@@ -2037,7 +2037,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     builder: (dialogContext) {
                       return StatefulBuilder(
                         builder: (context, setState) => AlertDialog(
-                          title: const Text('Seleziona mese e anno'),
+                          title: Text(AppLocalizations.of(context)!.select_month_year),
                           content: SizedBox(
                             width: 300,
                             child: Column(
@@ -2085,13 +2085,13 @@ class _MyHomePageState extends State<MyHomePage> {
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.pop(dialogContext),
-                              child: const Text('Annulla'),
+                              child: Text(AppLocalizations.of(context)!.cancel),
                             ),
                             TextButton(
                               onPressed: () {
                                 Navigator.pop(dialogContext, DateTime(tempYear, tempMonth));
                               },
-                              child: const Text('Conferma'),
+                              child: Text(AppLocalizations.of(context)!.confirm),
                             ),
                           ],
                         ),
@@ -2136,7 +2136,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        'Turno',
+                        AppLocalizations.of(context)!.shift,
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.w600,
@@ -2217,7 +2217,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: Text(
                             _selectedTurnoName?.isNotEmpty == true
                                 ? _selectedTurnoName!
-                                : 'Seleziona',
+                                : AppLocalizations.of(context)!.select,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               color:
@@ -2234,15 +2234,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children: [
                       Expanded(
                         child: Center(
-                          child: Text('Inizio', style: TextStyle(fontSize: 16)),
+                          child: Text(AppLocalizations.of(context)!.start, style: TextStyle(fontSize: 16)),
                         ),
                       ),
                       Expanded(
                         child: Center(
-                          child: Text('Fine', style: TextStyle(fontSize: 16)),
+                          child: Text(AppLocalizations.of(context)!.end, style: TextStyle(fontSize: 16)),
                         ),
                       ),
                     ],
@@ -2289,7 +2289,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     keyboardType: TextInputType.text,
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
-                      labelText: 'Luogo iniziale',
+                      labelText: AppLocalizations.of(context)!.initial_place,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(18)),
                       ),
@@ -2311,7 +2311,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     keyboardType: TextInputType.text,
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
-                      labelText: 'Luogo finale',
+                      labelText: AppLocalizations.of(context)!.final_place,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(18)),
                       ),
@@ -2327,10 +2327,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   const SizedBox(height: 24),
                   Row(
                     children: [
-                      const Text(
-                        'Durata del turno:', // Modificato da 'Media oraria'
+                      Text(
+                        AppLocalizations.of(context)!.shift_duration_label, // Modificato da 'Media oraria'
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 17,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -2344,8 +2344,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       const Spacer(),
                       IconButton(
-                        icon: const Icon(Icons.edit),
-                        tooltip: 'Modifica durata turno',
+                        icon: Icon(Icons.edit),
+                        tooltip: AppLocalizations.of(context)!.edit_duration,
                         onPressed: () async {
                           final now = TimeOfDay(
                             hour: _durataTurnoSelezionato?.inHours ?? oreDiLavoroPredefinite.inHours,
@@ -2356,7 +2356,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           final picked = await showTimePicker(
                             context: context,
                             initialTime: now,
-                            helpText: 'Seleziona durata turno',
+                            helpText: AppLocalizations.of(context)!.select_duration,
                             builder: (context, child) {
                               return MediaQuery(
                                 data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
@@ -2376,10 +2376,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   const SizedBox(height: 18),
                   Row(
                     children: [
-                      const Text(
-                        'Straordinario:',
+                      Text(
+                        AppLocalizations.of(context)!.overtime_2,
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 17,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -2398,7 +2398,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       const Spacer(),
                       IconButton(
                         icon: const Icon(Icons.edit),
-                        tooltip: 'Modifica straordinario',
+                        tooltip: AppLocalizations.of(context)!.edit_overtime,
                         onPressed: () {
                           FocusScope.of(context).unfocus();
                           _showStraordinarioEditDialog();
@@ -2428,9 +2428,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                     child: Row(
                       children: [
-                        const Text(
-                          'Pause non retribuite',
-                          style: TextStyle(fontSize: 18),
+                        Text(
+                          AppLocalizations.of(context)!.breaks,
+                          style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
                         ),
                         const SizedBox(width: 8),
                         Text(
@@ -2455,7 +2455,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         maxLines: null,
                         keyboardType: TextInputType.multiline,
                         decoration: InputDecoration(
-                          labelText: 'Note aggiuntive',
+                          labelText: AppLocalizations.of(context)!.notes,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(18)),
                           ),
@@ -2484,7 +2484,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                             ),
                           ),
-                          tooltip: 'Cancella note',
+                          tooltip: AppLocalizations.of(context)!.clear_notes,
                           onPressed: () {
                             _noteController.clear();
                           },
@@ -2636,7 +2636,7 @@ class _MyHomePageState extends State<MyHomePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Dati salvati')));
+      ).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.data_saved)));
     });
   }
 
@@ -2666,8 +2666,6 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _luogoFinaleController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
 
-  // Rimuovo i FocusNode e i bool readOnly non più necessari
-
   @override
   void dispose() {
     _luogoController.dispose();
@@ -2688,7 +2686,6 @@ class _MyHomePageState extends State<MyHomePage> {
         statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
       ),
     );
-    // Imposta il colore della status bar solo all'avvio e non ad ogni rebuild 
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (bool didPop, dynamic result) async {
@@ -2703,16 +2700,16 @@ class _MyHomePageState extends State<MyHomePage> {
             
             context: context,
             builder: (context) => AlertDialog(
-              title: const Text('Conferma uscita'),
-              content: const Text('Vuoi davvero uscire dall\'app?'),
+              title: Text(AppLocalizations.of(context)!.exit_confirmation),
+              content: Text(AppLocalizations.of(context)!.do_you_want_to_exit),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text('No'),
+                  child: Text(AppLocalizations.of(context)!.no),
                 ),
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(true),
-                  child: const Text('Sì'),
+                  child: Text(AppLocalizations.of(context)!.yes),
                 ),
               ],
             ),
@@ -2748,8 +2745,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
           centerTitle: true,
           title: _selectedSection == DrawerSection.calendar
-              ? const Text(
-                  'Calendario',
+              ? Text(
+                  AppLocalizations.of(context)!.calendar,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 )
               : (_selectedSection == DrawerSection.home
@@ -2766,14 +2763,14 @@ class _MyHomePageState extends State<MyHomePage> {
               ? [
                   IconButton(
                     icon: const Icon(Icons.edit),
-                    tooltip: 'Modifica riepilogo',
+                    tooltip: AppLocalizations.of(context)!.edit_summary,
                     onPressed: () {
                       showDialog(
                         context: context,
                         builder: (context) => StatefulBuilder(
                           builder: (context, setState) => AlertDialog(
-                            title: const Text(
-                              'Visibilità elementi',
+                            title: Text(
+                              AppLocalizations.of(context)!.element_visibility,
                               style: TextStyle(fontWeight: FontWeight.w700),
                             ),
                             content: SizedBox(
@@ -2790,9 +2787,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        const Expanded(
+                                        Expanded(
                                           child: Text(
-                                            'Straordinari (Ore)',
+                                            AppLocalizations.of(context)!.overtime_hours,
                                             style: TextStyle(fontSize: 16),
                                           ),
                                         ),
@@ -2824,9 +2821,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        const Expanded(
+                                        Expanded(
                                           child: Text(
-                                            'Ferie Disponibili',
+                                            AppLocalizations.of(context)!.holidays_available,
                                             style: TextStyle(fontSize: 16),
                                           ),
                                         ),
@@ -2858,9 +2855,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        const Expanded(
+                                        Expanded(
                                           child: Text(
-                                            'Ferie Rimaste',
+                                            AppLocalizations.of(context)!.holidays_left,
                                             style: TextStyle(fontSize: 16),
                                           ),
                                         ),
@@ -2933,12 +2930,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                       setState(() {});
                                       Navigator.of(context).pop();
                                     },
-                                    child: const Text('Ripristina'),
+                                    child: Text(AppLocalizations.of(context)!.restore),
                                   ),
                                   Spacer(),
                                   TextButton(
                                     onPressed: () => Navigator.of(context).pop(),
-                                    child: const Text('Chiudi'),
+                                    child: Text(AppLocalizations.of(context)!.close),
                                   ),
                                 ]
                               )
@@ -2985,8 +2982,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     const SizedBox(height: 10),
                     ListTile(
                       leading: const Icon(Icons.calendar_today),
-                      title: const Text(
-                        'Calendario',
+                      title: Text(
+                        AppLocalizations.of(context)!.calendar,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       selected: _selectedSection == DrawerSection.calendar,
@@ -2997,8 +2994,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     ListTile(
                       leading: const Icon(Icons.list_alt),
-                      title: const Text(
-                        'Riepilogo',
+                      title: Text(
+                        AppLocalizations.of(context)!.summary,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       selected: _selectedSection == DrawerSection.summary,
@@ -3009,8 +3006,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     ListTile(
                       leading: const Icon(Icons.settings),
-                      title: const Text(
-                        'Impostazioni',
+                      title: Text(
+                        AppLocalizations.of(context)!.settings,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       selected: _selectedSection == DrawerSection.settings,
@@ -3021,8 +3018,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     ListTile(
                       leading: const Icon(Icons.info),
-                      title: const Text(
-                        'Informazioni',
+                      title: Text(
+                        AppLocalizations.of(context)!.info,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       selected: _selectedSection == DrawerSection.info,
@@ -3042,7 +3039,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   _salvaDatiGiornata();
                 },
                 icon: const Icon(Icons.save),
-                label: const Text('Salva'),
+                label: Text(AppLocalizations.of(context)!.save),
               )
             : null,
       ),
@@ -3587,9 +3584,9 @@ class _PersonalizzaTurniDialogState extends State<_PersonalizzaTurniDialog> {
                     ),
                     child: Row(
                       children: [
-                        const Expanded(
+                        Expanded(
                           child: Text(
-                            'Personalizza turni',
+                            AppLocalizations.of(context)!.customize_shifts,
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -3598,7 +3595,7 @@ class _PersonalizzaTurniDialogState extends State<_PersonalizzaTurniDialog> {
                         ),
                         IconButton(
                           icon: const Icon(Icons.add),
-                          tooltip: 'Aggiungi turno',
+                          tooltip: AppLocalizations.of(context)!.add_shift,
                           onPressed: () => apriModificaTurno(),
                         ),
                       ],
@@ -3609,10 +3606,10 @@ class _PersonalizzaTurniDialogState extends State<_PersonalizzaTurniDialog> {
                     child: _loading
                         ? const Center(child: CircularProgressIndicator())
                         : _nomiTurni.isEmpty
-                        ? const Center(
+                        ? Center(
                             child: Padding(
                               padding: EdgeInsets.all(24),
-                              child: Text('Nessun turno personalizzato'),
+                              child: Text(AppLocalizations.of(context)!.no_custom_shifts_short),
                             ),
                           )
                         : ListView.builder(
@@ -3639,7 +3636,7 @@ class _PersonalizzaTurniDialogState extends State<_PersonalizzaTurniDialog> {
                       padding: const EdgeInsets.only(right: 16, bottom: 8),
                       child: ElevatedButton(
                         onPressed: () => Navigator.of(context).pop(),
-                        child: const Text('Chiudi'),
+                        child: Text(AppLocalizations.of(context)!.close),
                       ),
                     ),
                   ),
@@ -3821,9 +3818,9 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
                     children: [
                       Row(
                         children: [
-                          const Expanded(
+                          Expanded(
                             child: Text(
-                              'Modifica turno',
+                              AppLocalizations.of(context)!.edit_shift,
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -3833,20 +3830,20 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
                           if (widget.nomeTurno != null)
                             IconButton(
                               icon: const Icon(Icons.delete, color: Colors.red),
-                              tooltip: 'Elimina turno',
+                              tooltip: AppLocalizations.of(context)!.delete_shift,
                               onPressed: () async {
                                 final conferma = await showDialog<bool>(
                                   context: context,
                                   builder: (context) => AlertDialog(
-                                    title: const Text('Conferma eliminazione'),
+                                    title: Text(AppLocalizations.of(context)!.delete_confirm),
                                     content: Text(
-                                      'Sei sicuro di voler eliminare il turno "${widget.nomeTurno}"? Questa azione non può essere annullata.',
+                                      AppLocalizations.of(context)!.delete_shift_confirm(widget.nomeTurno!),
                                     ),
                                     actions: [
                                       TextButton(
                                         onPressed: () =>
                                             Navigator.pop(context, false),
-                                        child: const Text('Annulla'),
+                                        child: Text(AppLocalizations.of(context)!.cancel),
                                       ),
                                       ElevatedButton(
                                         onPressed: () =>
@@ -3854,7 +3851,7 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.red,
                                         ),
-                                        child: const Text('Elimina'),
+                                        child: Text(AppLocalizations.of(context)!.delete),
                                       ),
                                     ],
                                   ),
@@ -3869,12 +3866,12 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
                       const SizedBox(height: 16),
                       TextFormField(
                         controller: _nomeController,
-                        decoration: const InputDecoration(
-                          labelText: 'Nome turno',
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.shift_name,
                           border: OutlineInputBorder(),
                         ),
                         validator: (v) => (v == null || v.trim().isEmpty)
-                            ? 'Nome obbligatorio'
+                            ? AppLocalizations.of(context)!.shift_name_required
                             : null,
                         enabled: widget.nomeTurno == null,
                         showCursor: true,
@@ -3935,7 +3932,7 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Durata (hh:mm)',
+                              AppLocalizations.of(context)!.duration,
                               style: TextStyle(
                                 color: Theme.of(context).brightness == Brightness.light
                                 ? Colors.black
@@ -3965,7 +3962,7 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
                                 final picked = await showTimePicker(
                                   context: context,
                                   initialTime: now,
-                                  helpText: 'Seleziona durata turno',
+                                  helpText: AppLocalizations.of(context)!.select_duration,
                                   builder: (context, child) {
                                     return MediaQuery(
                                       data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
@@ -3998,8 +3995,8 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
                       const SizedBox(height: 16),
                       TextFormField(
                         controller: _luogoInizialeController,
-                        decoration: const InputDecoration(
-                          labelText: 'Luogo iniziale',
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.initial_place,
                           border: OutlineInputBorder(),
                         ),
                         showCursor: true,
@@ -4008,8 +4005,8 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
                       const SizedBox(height: 16),
                       TextFormField(
                         controller: _luogoFinaleController,
-                        decoration: const InputDecoration(
-                          labelText: 'Luogo finale',
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.final_place,
                           border: OutlineInputBorder(),
                         ),
                       ),
@@ -4017,7 +4014,7 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          'Tag del turno',
+                          AppLocalizations.of(context)!.shift_tag,
                           style: TextStyle(fontWeight: FontWeight.w600),
                         ),
                       ),
@@ -4064,7 +4061,7 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
                                       ),
                                     )
                                   : null,
-                              child: const Text('Annulla'),
+                              child: Text(AppLocalizations.of(context)!.cancel),
                             ),
                           ),
                           const SizedBox(width: 16),
@@ -4081,7 +4078,7 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
                                       ),
                                     )
                                   : null,
-                              child: const Text('Salva'),
+                              child: Text(AppLocalizations.of(context)!.save),
                             ),
                           ),
                         ],
@@ -4154,7 +4151,7 @@ class _ModificaPausaDialogState extends State<_ModificaPausaDialog> {
       insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
       child: ConstrainedBox(
       constraints: BoxConstraints(
-        maxWidth: 550, // Limite larghezza come le altre finestre
+        maxWidth: 550,
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -4163,15 +4160,15 @@ class _ModificaPausaDialogState extends State<_ModificaPausaDialog> {
           children: [
             Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: Text(
-                    'Modifica pausa',
+                    AppLocalizations.of(context)!.breaks_edit,
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ),
                 IconButton(
                   icon: const Icon(Icons.delete, color: Colors.red),
-                  tooltip: 'Elimina pausa',
+                  tooltip: AppLocalizations.of(context)!.delete_break,
                   onPressed: () {},
                 ),
               ],
@@ -4198,7 +4195,7 @@ class _ModificaPausaDialogState extends State<_ModificaPausaDialog> {
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'Durata: ${_calcolaDiff()}',
+                AppLocalizations.of(context)!.duration2( '${_calcolaDiff()}'),
                 style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
               ),
             ),
@@ -4216,7 +4213,7 @@ class _ModificaPausaDialogState extends State<_ModificaPausaDialog> {
                           ),
                         )
                       : null,
-                  child: const Text('Annulla'),
+                  child: Text(AppLocalizations.of(context)!.cancel),
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
@@ -4241,7 +4238,7 @@ class _ModificaPausaDialogState extends State<_ModificaPausaDialog> {
                           ),
                         )
                       : null,
-                  child: const Text('Salva'),
+                  child: Text(AppLocalizations.of(context)!.save),
                 ),
               ],
             ),
@@ -4371,8 +4368,8 @@ class _PauseDialogState extends State<_PauseDialog> {
           children: [
             Row(
               children: [
-                const Text(
-                  'Pause:',
+                Text(
+                  AppLocalizations.of(context)!.breaks_label,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(width: 8),
@@ -4381,7 +4378,7 @@ class _PauseDialogState extends State<_PauseDialog> {
                 const Spacer(),
                 IconButton(
                   icon: const Icon(Icons.add),
-                  tooltip: 'Aggiungi pausa',
+                  tooltip: AppLocalizations.of(context)!.add_shift,
                   onPressed: () async {
                     final result = await showDialog<Map<String, String?>>(
                       context: context,
@@ -4399,7 +4396,7 @@ class _PauseDialogState extends State<_PauseDialog> {
             ),
             const SizedBox(height: 16),
             if (_pauseList.isEmpty)
-              const Center(child: Text('Nessuna pausa inserita'))
+              Center(child: Text(AppLocalizations.of(context)!.no_breaks_entered))
             else
               SizedBox(
                 height: 200,
@@ -4446,7 +4443,7 @@ class _PauseDialogState extends State<_PauseDialog> {
               alignment: Alignment.centerRight,
               child: ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Chiudi'),
+                child: Text(AppLocalizations.of(context)!.close),
               ),
             ),
           ],
@@ -4484,16 +4481,6 @@ class _CalendarScreenState extends State<_CalendarScreen> {
       });
     }
   }
-
-  static const List<String> _giorniSettimana = [
-    'Lun',
-    'Mar',
-    'Mer',
-    'Gio',
-    'Ven',
-    'Sab',
-    'Dom',
-  ];
 
   List<DateTime> _getDaysForMonth(DateTime? month) {
     if (month == null) {
@@ -4540,6 +4527,15 @@ class _CalendarScreenState extends State<_CalendarScreen> {
     return FutureBuilder<Map<String, String>>(
       future: _loadTurniPerMese(_focusedMonth),
       builder: (context, snapshot) {
+        final List<String> _giorniSettimana = [
+          AppLocalizations.of(context)!.monday,
+          AppLocalizations.of(context)!.tuesday,
+          AppLocalizations.of(context)!.wednesday,
+          AppLocalizations.of(context)!.thursday,
+          AppLocalizations.of(context)!.friday,
+          AppLocalizations.of(context)!.saturday,
+          AppLocalizations.of(context)!.sunday,
+        ];
         final turniPerGiorno = snapshot.data ?? {};
         return Column(
           children: [
@@ -4625,13 +4621,13 @@ class _CalendarScreenState extends State<_CalendarScreen> {
                                         context: context,
                                         builder: (context) => AlertDialog(
                                           title: Text(
-                                            'Sei sicuro di voler eliminare i dati per la giornata ${day.day.toString().padLeft(2, '0')}/${day.month.toString().padLeft(2, '0')}/${day.year}?',
+                                            AppLocalizations.of(context)!.delete_day_confirm('${day.day.toString().padLeft(2, '0')}/${day.month.toString().padLeft(2, '0')}/${day.year}'),
                                           ),
                                           actions: [
                                             TextButton(
                                               onPressed: () =>
                                                   Navigator.pop(context, false),
-                                              child: const Text('Annulla'),
+                                              child: Text(AppLocalizations.of(context)!.cancel),
                                             ),
                                             ElevatedButton(
                                               onPressed: () =>
@@ -4764,7 +4760,7 @@ class _CalendarScreenState extends State<_CalendarScreen> {
                 }),
               ),
             ),
-            // Somma straordinari del mese (spostata sotto la griglia)
+            // Somma straordinari del mese
             FutureBuilder<String>(
               future: _calcolaSommaStraordinariMese(_focusedMonth),
               builder: (context, snapshot) {
@@ -4774,11 +4770,11 @@ class _CalendarScreenState extends State<_CalendarScreen> {
                     top: 35,
                     bottom: 8,
                     left: 20,
-                  ), // aggiunto left
+                  ),
                   child: Row(
                     children: [
-                      const Text(
-                        'Ore di straordinari:',
+                      Text(
+                        AppLocalizations.of(context)!.overtime_calendar_hours,
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 19,
@@ -4930,14 +4926,14 @@ Future<void> apriModificaTurno({String? nome, String? dati}) async {
               Row(
                 children: [
                   const SizedBox(width: 8),
-                  const Text(
-                    'Seleziona turno',
+                  Text(
+                    AppLocalizations.of(context)!.select_shift,
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                   const Spacer(),
                   IconButton(
-                    icon: const Icon(Icons.add),
-                    tooltip: 'Aggiungi turno',
+                    icon: Icon(Icons.add),
+                    tooltip: AppLocalizations.of(context)!.add_shift,
                     onPressed: () => apriModificaTurno(),
                   ),
                 ]
@@ -4946,10 +4942,10 @@ Future<void> apriModificaTurno({String? nome, String? dati}) async {
               if (_loading)
                 const Center(child: CircularProgressIndicator())
               else if (_nomiTurni.isEmpty)
-                const Padding(
+                Padding(
                   padding: EdgeInsets.symmetric(vertical: 24),
                   child: Text(
-                    'Nessun turno salvato. Puoi aggiungerli dalla schermata Impostazioni.',
+                    AppLocalizations.of(context)!.no_custom_shifts,
                     textAlign: TextAlign.center,
                   ),
                 )
@@ -5009,7 +5005,7 @@ Future<void> apriModificaTurno({String? nome, String? dati}) async {
                   padding: const EdgeInsets.only(right: 16, bottom: 8),
                   child: ElevatedButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('Chiudi'),
+                    child: Text(AppLocalizations.of(context)!.close),
                   ),
                 ),
               ),
@@ -5146,7 +5142,7 @@ class _AnteprimaGiornataDialog extends StatelessWidget {
                 ),
                 IconButton(
                   icon: const Icon(Icons.delete, color: Colors.red),
-                  tooltip: 'Elimina dati giornata',
+                  tooltip: AppLocalizations.of(context)!.delete_day_data,
                   onPressed: () async {
                     await onElimina();
                   },
@@ -5155,18 +5151,18 @@ class _AnteprimaGiornataDialog extends StatelessWidget {
             ),
             
             const SizedBox(height: 20),
-            _buildField('Turno', turno, bold: false),
+            _buildField(AppLocalizations.of(context)!.shift, turno, bold: false),
             const SizedBox(height: 15),
-            _buildField('Effettivo del turno', totaleTurno, bold: true), // <--- AGGIUNTA
+            _buildField(AppLocalizations.of(context)!.effective_shift, totaleTurno, bold: true),
             const SizedBox(height: 10),
             _buildField(
-              'Orario',
+              AppLocalizations.of(context)!.schedule,
               inizio.isNotEmpty && fine.isNotEmpty ? '$inizio - $fine' : '--',
               bold: false,
             ),
             const SizedBox(height: 15),
             _buildField(
-              'Luogo',
+              AppLocalizations.of(context)!.place,
               (luogoIniziale.isEmpty && luogoFinale.isEmpty)
                   ? '-'
                   : (luogoIniziale.isNotEmpty && luogoFinale.isNotEmpty
@@ -5179,8 +5175,8 @@ class _AnteprimaGiornataDialog extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Straordinari e Pause: ',
+                Text(
+                  AppLocalizations.of(context)!.overtime_breaks,
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
                 ),
                 Expanded(
@@ -5193,7 +5189,7 @@ class _AnteprimaGiornataDialog extends StatelessWidget {
                 ),
                 IconButton(
                   icon: const Icon(Icons.info_outline, size: 22),
-                  tooltip: 'Dettaglio straordinari e pause',
+                  tooltip: AppLocalizations.of(context)!.overtime_breaks_info,
                   onPressed: () {
                     // Parsing delle singole pause
                     List<Map<String, String>> pauseList = [];
@@ -5241,7 +5237,7 @@ class _AnteprimaGiornataDialog extends StatelessWidget {
                       context: context,
                       builder: (context) => AlertDialog(
                         insetPadding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
-                        title: const Text('Straordinari e Pause', style: TextStyle(fontSize: 24),),
+                        title: Text(AppLocalizations.of(context)!.overtime_breaks2, style: TextStyle(fontSize: 24),),
                               content: SizedBox(
                                 width: 400, 
                                 child: Column(
@@ -5255,8 +5251,8 @@ class _AnteprimaGiornataDialog extends StatelessWidget {
                                   const SizedBox(height: 19),
                                   Row(
                                     children: [
-                                      const Text(
-                                        'Straordinario: ',
+                                      Text(
+                                        AppLocalizations.of(context)!.overtime_2,
                                         style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
                                       ),
                                       Expanded(
@@ -5272,11 +5268,11 @@ class _AnteprimaGiornataDialog extends StatelessWidget {
                                   ),
                                   const SizedBox(height: 25),
                                   pauseList.isEmpty
-                                    ? const Text('Nessuna pausa registrata', style: TextStyle(fontSize: 17))
+                                    ? Text(AppLocalizations.of(context)!.no_breaks, style: TextStyle(fontSize: 17))
                                     : Row(
                                         children: [
-                                          const Text(
-                                            'Totale pause: ',
+                                          Text(
+                                            AppLocalizations.of(context)!.breaks_total_label,
                                             style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
                                           ),
                                           Text(
@@ -5312,7 +5308,7 @@ class _AnteprimaGiornataDialog extends StatelessWidget {
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
-                            child: const Text('Chiudi'),
+                            child: Text(AppLocalizations.of(context)!.close),
                           ),
                         ],
                       ),
@@ -5322,7 +5318,7 @@ class _AnteprimaGiornataDialog extends StatelessWidget {
               ],
             ),),
             SizedBox(height: 3),
-            _buildField('Note', note.isNotEmpty ? note : '-', bold: false),
+            _buildField(AppLocalizations.of(context)!.notes_short, note.isNotEmpty ? note : '-', bold: false),
             const SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -5337,7 +5333,7 @@ class _AnteprimaGiornataDialog extends StatelessWidget {
                           ),
                         )
                       : null,
-                  child: const Text('Chiudi'),
+                  child: Text(AppLocalizations.of(context)!.close),
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
@@ -5350,7 +5346,7 @@ class _AnteprimaGiornataDialog extends StatelessWidget {
                           ),
                         )
                       : null,
-                  child: const Text('Modifica'),
+                  child: Text(AppLocalizations.of(context)!.edit,),
                 ),
               ],
             ),
@@ -5428,8 +5424,8 @@ class _AnteprimaGiornataVuotaDialog extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 24),
-            const Text(
-              'Nessun dato trovato per questa giornata, puoi aggiungerne premendo il tasto Aggiungi.',
+            Text(
+              AppLocalizations.of(context)!.no_day_data,
               style: TextStyle(fontSize: 17),
             ),
             const SizedBox(height: 32),
@@ -5446,7 +5442,7 @@ class _AnteprimaGiornataVuotaDialog extends StatelessWidget {
                           ),
                         )
                       : null,
-                  child: const Text('Chiudi'),
+                  child: Text(AppLocalizations.of(context)!.close),
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
@@ -5459,7 +5455,7 @@ class _AnteprimaGiornataVuotaDialog extends StatelessWidget {
                           ),
                         )
                       : null,
-                  child: const Text('Aggiungi'),
+                  child: Text(AppLocalizations.of(context)!.add),
                 ),
               ],
             ),
@@ -5488,15 +5484,15 @@ class _BackupScreen extends StatelessWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Backup e Ripristino')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.backup_and_restore)),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // --- Sezione Backup ---
-            const Text(
-              'Backup',
+            Text(
+              AppLocalizations.of(context)!.backup,
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
@@ -5515,13 +5511,13 @@ class _BackupScreen extends StatelessWidget {
                       onPressed: () => esportaBackup(context),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
+                        children: [
                           Icon(Icons.backup, size: 54),
                           SizedBox(height: 12),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 7),
                             child: Text(
-                              'Backup file',
+                              AppLocalizations.of(context)!.backup,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 20,
@@ -5551,13 +5547,13 @@ class _BackupScreen extends StatelessWidget {
                       onPressed: () => importaBackup(context, onImportComplete),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
+                        children: [
                           Icon(Icons.restore, size: 54),
                           SizedBox(height: 12),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 7),
                             child: Text(
-                              'Ripristina file',
+                              AppLocalizations.of(context)!.restore,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 20,
@@ -5577,8 +5573,8 @@ class _BackupScreen extends StatelessWidget {
             ),
             const SizedBox(height: 32),
             // --- Sezione Ripristino ---
-            const Text(
-              'Ripristino',
+            Text(
+              AppLocalizations.of(context)!.restore_2,
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
@@ -5594,13 +5590,13 @@ class _BackupScreen extends StatelessWidget {
                       },
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
+                        children: [
                           Icon(Icons.calendar_today, size: 40),
                           SizedBox(height: 12),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 7),
                             child: Text(
-                              'Reset Calendario',
+                              AppLocalizations.of(context)!.reset_calendar,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 18,
@@ -5627,13 +5623,13 @@ class _BackupScreen extends StatelessWidget {
                       },
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
+                        children: [
                           Icon(Icons.list_alt, size: 40),
                           SizedBox(height: 12),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 7),
                             child: Text(
-                              'Reset Riepilogo',
+                              AppLocalizations.of(context)!.reset_summary,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 18,
@@ -5664,13 +5660,13 @@ class _BackupScreen extends StatelessWidget {
                       },
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
+                        children: [
                           Icon(Icons.settings, size: 40),
                           SizedBox(height: 12),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 7),
                             child: Text(
-                              'Reset Turni Pers.',
+                              AppLocalizations.of(context)!.reset_custom_shifts,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 18,
@@ -5697,13 +5693,13 @@ class _BackupScreen extends StatelessWidget {
                       },
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
+                        children: [
                           Icon(Icons.delete_forever, size: 40),
                           SizedBox(height: 12),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 7),
                             child: Text(
-                              'Reset App',
+                              AppLocalizations.of(context)!.reset_app,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 18,
@@ -5802,7 +5798,7 @@ Future<void> esportaBackup(BuildContext context) async {
     String? savePath;
     if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
       final result = await FilePicker.platform.saveFile(
-        dialogTitle: 'Scegli dove salvare il backup',
+        dialogTitle: AppLocalizations.of(context)!.where_to_save_backup,
         fileName: 'backup_turni_lav.json',
         type: FileType.custom,
         allowedExtensions: ['json'],
@@ -5810,7 +5806,7 @@ Future<void> esportaBackup(BuildContext context) async {
       if (result == null) {
         if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Esportazione annullata.')),
+          SnackBar(content: Text(AppLocalizations.of(context)!.export_cancelled)),
         );
         return;
       }
@@ -5826,12 +5822,12 @@ Future<void> esportaBackup(BuildContext context) async {
     await file.writeAsString(const JsonEncoder.withIndent('  ').convert(backupJson));
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Backup esportato in $savePath')),
+      SnackBar(content: Text(AppLocalizations.of(context)!.backup_exported(savePath))),
     );
   } catch (e) {
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Errore durante l\'esportazione: $e')),
+      SnackBar(content: Text(AppLocalizations.of(context)!.backup_export_error('$e'))),
     );
   }
 }
@@ -5936,13 +5932,13 @@ Future<void> importaBackup(
 
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Backup importato con successo!')),
+      SnackBar(content: Text(AppLocalizations.of(context)!.backup_imported)),
     );
     await onImportCompleteCallback();
   } catch (e) {
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Errore durante l\'importazione: $e')),
+      SnackBar(content: Text(AppLocalizations.of(context)!.backup_import_error('$e'))),
     );
   }
 }
@@ -5955,18 +5951,18 @@ Future<void> resetVisibilitaRiepilogo(BuildContext context) async {
   final confermato = await showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('Conferma reset visibilità'),
-      content: const Text(
-        'Vuoi ripristinare la visibilità predefinita degli elementi del riepilogo?',
+      title: Text(AppLocalizations.of(context)!.visibility_reset_confirm),
+      content: Text(
+        AppLocalizations.of(context)!.reset_visibility_confirm,
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('Annulla'),
+          child: Text(AppLocalizations.of(context)!.cancel),
         ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(true),
-          child: const Text('Conferma'),
+          child:  Text(AppLocalizations.of(context)!.confirm),
         ),
       ],
     ),
@@ -5985,8 +5981,8 @@ Future<void> resetVisibilitaRiepilogo(BuildContext context) async {
     }
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Impostazioni di visibilità del riepilogo ripristinate.'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.reset_visibility_done),
         ),
       );
     }
@@ -5997,18 +5993,18 @@ Future<void> resetTurniPerGiornata(BuildContext context) async {
   final confermato = await showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('Conferma reset'),
-      content: const Text(
-        'Sei sicuro di voler cancellare tutti i dati dei turni per giornata?',
+      title: Text(AppLocalizations.of(context)!.confirm_reset),
+      content: Text(
+        AppLocalizations.of(context)!.reset_calendar_confirm,
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('Annulla'),
+          child: Text(AppLocalizations.of(context)!.cancel),
         ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(true),
-          child: const Text('Conferma'),
+          child:  Text(AppLocalizations.of(context)!.confirm),
         ),
       ],
     ),
@@ -6024,9 +6020,9 @@ Future<void> resetTurniPerGiornata(BuildContext context) async {
     }
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text(
-            'Tutti i dati dei turni per giornata sono stati cancellati.',
+            AppLocalizations.of(context)!.reset_calendar_done,
           ),
         ),
       );
@@ -6050,18 +6046,18 @@ Future<void> resetRiepilogo(BuildContext context) async {
   final confermato = await showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('Conferma reset riepilogo'),
-      content: const Text(
-        'Vuoi ripristinare la visibilità predefinita degli elementi del riepilogo e azzerare tutte le ferie disponibili e le manc. prest. di adeguamento per tutti gli anni?',
+      title: Text(AppLocalizations.of(context)!.confirm_reset),
+      content: Text(
+        AppLocalizations.of(context)!.reset_visibility_confirm,
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('Annulla'),
+          child: Text(AppLocalizations.of(context)!.cancel),
         ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(true),
-          child: const Text('Conferma'),
+          child:  Text(AppLocalizations.of(context)!.confirm),
         ),
       ],
     ),
@@ -6088,8 +6084,8 @@ Future<void> resetRiepilogo(BuildContext context) async {
     }
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Impostazioni di visibilità e valori annuali del riepilogo ripristinati.'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.reset_visibility_done),
         ),
       );
     }
@@ -6100,18 +6096,18 @@ Future<void> resetPersonalizzaTurni(BuildContext context) async {
   final confermato = await showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('Conferma reset'),
-      content: const Text(
-        'Sei sicuro di voler cancellare tutti i dati dei turni personalizzati?',
+      title: Text(AppLocalizations.of(context)!.confirm_reset),
+      content: Text(
+        AppLocalizations.of(context)!.reset_custom_shifts_confirm,
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('Annulla'),
+          child: Text(AppLocalizations.of(context)!.cancel),
         ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(true),
-          child: const Text('Conferma'),
+          child:  Text(AppLocalizations.of(context)!.confirm),
         ),
       ],
     ),
@@ -6127,9 +6123,9 @@ Future<void> resetPersonalizzaTurni(BuildContext context) async {
     }
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text(
-            'Tutti i dati dei turni personalizzati sono stati cancellati.',
+            AppLocalizations.of(context)!.reset_custom_shifts_done,
           ),
         ),
       );
@@ -6141,18 +6137,18 @@ Future<void> resetTotale(BuildContext context) async {
   final confermato = await showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text('Conferma reset totale'),
-      content: const Text(
-        'Sei sicuro di voler cancellare tutti i dati e riavviare l\'app?',
+      title: Text(AppLocalizations.of(context)!.confirm_reset),
+      content: Text(
+        AppLocalizations.of(context)!.reset_app_confirm,
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('Annulla'),
+          child: Text(AppLocalizations.of(context)!.cancel),
         ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(true),
-          child: const Text('Conferma'),
+          child: Text(AppLocalizations.of(context)!.confirm),
         ),
       ],
     ),
@@ -6162,18 +6158,18 @@ Future<void> resetTotale(BuildContext context) async {
     final doppiaConferma = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Attenzione!'),
-        content: const Text(
-          'Questa operazione cancellerà TUTTI i dati dell\'applicazione in modo irreversibile. Vuoi davvero procedere?',
+        title: Text(AppLocalizations.of(context)!.attention),
+        content: Text(
+          AppLocalizations.of(context)!.reset_app_confirm2,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Annulla'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Procedi'),
+            child: Text(AppLocalizations.of(context)!.proceed),
           ),
         ],
       ),
@@ -6183,9 +6179,9 @@ Future<void> resetTotale(BuildContext context) async {
       await prefs.clear();
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text(
-              'Tutti i dati sono stati cancellati.',
+              AppLocalizations.of(context)!.reset_app_done,
             ),
           ),
         );
