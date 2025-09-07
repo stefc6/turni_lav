@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
@@ -10,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:flutter/gestures.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:turni_lav/l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -66,6 +66,31 @@ class CustomColors extends ThemeExtension<CustomColors> {
 
 class _MyAppState extends State<MyApp> {
   ThemeMode _themeMode = ThemeMode.system;
+    Locale? _locale;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLocale();
+  }
+
+  void _loadLocale() async {
+    final prefs = await SharedPreferences.getInstance();
+    final languageCode = prefs.getString('language_code');
+    if (languageCode != null) {
+      setState(() {
+        _locale = Locale(languageCode);
+      });
+    }
+  }
+
+  void _changeLanguage(Locale locale) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('language_code', locale.languageCode);
+    setState(() {
+      _locale = locale;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,12 +167,9 @@ class _MyAppState extends State<MyApp> {
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: _themeMode,
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [Locale('it', 'IT')],
+      locale: _locale,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: MyHomePage(
         title: 'Turni Lavoro',
         onThemeChanged: (mode) {
@@ -155,6 +177,7 @@ class _MyAppState extends State<MyApp> {
             _themeMode = mode;
           });
         },
+        onLanguageChanged: _changeLanguage,
         themeMode: _themeMode,
       ),
     );
@@ -172,12 +195,14 @@ class MyHomePage extends StatefulWidget {
     required this.title,
     this.initialSection = DrawerSection.calendar,
     required this.onThemeChanged,
+    required this.onLanguageChanged,
     required this.themeMode,
   });
 
   final String title;
   final DrawerSection initialSection;
   final ValueChanged<ThemeMode> onThemeChanged;
+  final ValueChanged<Locale>? onLanguageChanged;
   final ThemeMode themeMode;
 
   static const List<String> tagList = [
@@ -469,6 +494,70 @@ class _MyHomePageState extends State<MyHomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 20),
+              // --- INIZIO: Lingua ---
+              Row(
+                children: [
+                  const SizedBox(width: 10),
+                  const Text(
+                    'Lingua',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const Spacer(),
+                  Stack(
+                    children: [
+                      DropdownMenu<Locale>(
+                        initialSelection: Localizations.localeOf(context),
+                        dropdownMenuEntries: AppLocalizations.supportedLocales.map((locale) {
+                          String label;
+                          switch (locale.languageCode) {
+                            case 'it':
+                              label = 'Italiano';
+                              break;
+                            case 'en':
+                              label = 'English';
+                              break;
+                            default:
+                              label = locale.languageCode;
+                          }
+                          return DropdownMenuEntry(value: locale, label: label);
+                        }).toList(),
+                        onSelected: (Locale? value) {
+                          if (value != null) widget.onLanguageChanged!(value);
+                        },
+                        width: 120,
+                        enableFilter: false,
+                        enableSearch: false,
+                        inputDecorationTheme: const InputDecorationTheme(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                        trailingIcon: const Icon(Icons.expand_more_rounded),
+                        selectedTrailingIcon: const Icon(Icons.expand_less_rounded),
+                      ),
+                      // Blocca solo la parte di testo (80% a sinistra)
+                      Positioned.fill(
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: FractionallySizedBox(
+                            widthFactor: 0.6, // Copre solo la parte sinistra
+                            child: IgnorePointer(
+                              ignoring: false,
+                              child: Container(
+                                color: Colors.transparent,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              // --- FINE: Lingua --
+              const SizedBox(height: 26),
               // --- INIZIO: Tema ---
               Row(
                 children: [
@@ -524,7 +613,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
               // --- FINE: Tema ---
-              const SizedBox(height: 32),
+              const SizedBox(height: 26),
               // --- INIZIO: Personalizza turni ---
               Material(
                 color: Colors.transparent,
@@ -713,7 +802,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Row(
                       children: [
                         const Text(
-                          'Backup',
+                          'Backup e Ripristino',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w500,
@@ -730,123 +819,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               // --- FINE: Backup ---
-              const SizedBox(height: 32),
-              // --- INIZIO: Reset ---
-              Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(12),
-                  onTap: () {
-                    final ButtonStyle resetButtonStyle =
-                        ElevatedButton.styleFrom(
-                          minimumSize: const Size(
-                            double.infinity,
-                            48,
-                          ), // larghezza, altezza
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 12,
-                          ),
-                          textStyle: const TextStyle(fontSize: 18),
-                          alignment: Alignment.center,
-                        );
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text('Reset'),
-                        content: SizedBox(
-                          width: 300,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [ 
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  ElevatedButton(
-                                    style: resetButtonStyle,
-                                    onPressed: () async {
-                                      await resetTurniPerGiornata(context);
-                                      if (!context.mounted) return;
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Center(
-                                      child: Text('Reset Calendario', textAlign: TextAlign.center,),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  ElevatedButton(
-                                    style: resetButtonStyle,
-                                    onPressed: () async {
-                                      await resetRiepilogo(context);
-                                      if (!context.mounted) return;
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Center(
-                                    child: Text('Reset Riepilogo', textAlign: TextAlign.center,),
-                                  ),),
-                                  const SizedBox(height: 16),
-                                  ElevatedButton(
-                                    style: resetButtonStyle,
-                                    onPressed: () async {
-                                      await resetPersonalizzaTurni(context);
-                                      if (!context.mounted) return;
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Center(
-                                    child: Text(
-                                      'Reset Turni Pers.',
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),),
-                                  const SizedBox(height: 16),
-                                  ElevatedButton(
-                                    style: resetButtonStyle,
-                                    onPressed: () async {
-                                      await resetTotale(context);
-                                    },
-                                    child: const Center(
-                                    child: Text('Reset App', textAlign: TextAlign.center,),
-                                  ),),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: const Text('Annulla'),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 11,
-                      horizontal: 10,
-                    ),
-                    child: Row(
-                      children: [
-                        const Text(
-                          'Reset',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const Spacer(),
-                        Icon(
-                          Icons.refresh,
-                          color: Theme.of(context).iconTheme.color,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              // --- FINE: Reset ---
             ],
           ),
         );
@@ -2996,7 +2968,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: Padding(
                           padding: const EdgeInsets.only(left: 14, bottom: 16),
                           child: Text(
-                            'Menù',
+                            AppLocalizations.of(context)!.menu,
                             style: TextStyle(
                               color:
                                   Theme.of(context).brightness ==
@@ -5505,69 +5477,249 @@ class _BackupScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ButtonStyle resetButtonStyle = ElevatedButton.styleFrom(
+      minimumSize: const Size(double.infinity, 48),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      textStyle: const TextStyle(fontSize: 18),
+      alignment: Alignment.center,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18),
+      ),
+    );
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Backup')),
+      appBar: AppBar(title: const Text('Backup e Ripristino')),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 15),
-        child: Row(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: SizedBox(
-                height: 150,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                  ),
-                  onPressed: () => esportaBackup(context),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(Icons.backup, size: 54),
-                      SizedBox(height: 12),
-                      Text(
-                        'Backup',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+            // --- Sezione Backup ---
+            const Text(
+              'Backup',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: SizedBox(
-                height: 150,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                  ),
-                  onPressed: () => importaBackup(context, onImportComplete),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(Icons.restore, size: 54),
-                      SizedBox(height: 12),
-                      Text(
-                        'Ripristina',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: 150,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
                         ),
                       ),
-                    ],
+                      onPressed: () => esportaBackup(context),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(Icons.backup, size: 54),
+                          SizedBox(height: 12),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 7),
+                            child: Text(
+                              'Backup file',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              softWrap: true,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: SizedBox(
+                    height: 150,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                      ),
+                      onPressed: () => importaBackup(context, onImportComplete),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(Icons.restore, size: 54),
+                          SizedBox(height: 12),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 7),
+                            child: Text(
+                              'Ripristina file',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              softWrap: true,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 32),
+            // --- Sezione Ripristino ---
+            const Text(
+              'Ripristino',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: 150,
+                    child: ElevatedButton(
+                      style: resetButtonStyle,
+                      onPressed: () async {
+                        await resetTurniPerGiornata(context);
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(Icons.calendar_today, size: 40),
+                          SizedBox(height: 12),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 7),
+                            child: Text(
+                              'Reset Calendario',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              softWrap: true,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: SizedBox(
+                    height: 150,
+                    child: ElevatedButton(
+                      style: resetButtonStyle,
+                      onPressed: () async {
+                        await resetRiepilogo(context);
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(Icons.list_alt, size: 40),
+                          SizedBox(height: 12),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 7),
+                            child: Text(
+                              'Reset Riepilogo',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              softWrap: true,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 11),
+            Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: 150,
+                    child: ElevatedButton(
+                      style: resetButtonStyle,
+                      onPressed: () async {
+                        await resetPersonalizzaTurni(context);
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(Icons.settings, size: 40),
+                          SizedBox(height: 12),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 7),
+                            child: Text(
+                              'Reset Turni Pers.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              softWrap: true,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: SizedBox(
+                    height: 150,
+                    child: ElevatedButton(
+                      style: resetButtonStyle,
+                      onPressed: () async {
+                        await resetTotale(context);
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(Icons.delete_forever, size: 40),
+                          SizedBox(height: 12),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 7),
+                            child: Text(
+                              'Reset App',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              softWrap: true,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -6006,18 +6158,40 @@ Future<void> resetTotale(BuildContext context) async {
     ),
   );
   if (confermato == true) {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Tutti i dati sono stati cancellati. L\'app verrà riavviata.',
-          ),
+    // SECONDO DIALOG DI CONFERMA
+    final doppiaConferma = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Attenzione!'),
+        content: const Text(
+          'Questa operazione cancellerà TUTTI i dati dell\'applicazione in modo irreversibile. Vuoi davvero procedere?',
         ),
-      );
-      await Future.delayed(const Duration(seconds: 1));
-      SystemNavigator.pop();
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Annulla'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Procedi'),
+          ),
+        ],
+      ),
+    );
+    if (doppiaConferma == true) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Tutti i dati sono stati cancellati.',
+            ),
+          ),
+        );
+        await Future.delayed(const Duration(seconds: 1));
+        SystemNavigator.pop();
+      }
     }
   }
 }
