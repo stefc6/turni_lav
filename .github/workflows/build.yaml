@@ -1,4 +1,4 @@
-name: Build Flutter App
+name: Build App Android/Win/Linux
 
 on: workflow_dispatch
 
