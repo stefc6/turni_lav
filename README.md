@@ -23,9 +23,6 @@ Un'applicazione per le gestione dei propri turni lavorativi (presenta funzionali
 - [ ] iOS Release
 - [ ] Backup iCloud
 
-__!! Interfaccia e funzionalità possono dare problemi trattandosi di una beta !!__
-
-
 # Piattaforme
 - Android  (Disponibile - in sviluppo)
 - Windows  (Disponibile - in sviluppo)
