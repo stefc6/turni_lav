@@ -444,7 +444,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get reset_custom_shifts_done => 'Tutti i dati dei turni personalizzati sono stati cancellati.';
 
   @override
-  String get reset_app_done => 'Tutti i dati sono stati cancellati. L\'app verrà riavviata.';
+  String get reset_app_done => 'Tutti i dati sono stati cancellati.';
 
   @override
   String get visibility_reset_confirm => 'Conferma reset visibilità';
@@ -526,4 +526,43 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get sunday => 'Dom';
+
+  @override
+  String get tag_holidays => 'Ferie';
+
+  @override
+  String get tag_rest => 'Riposi';
+
+  @override
+  String get tag_missed_performance => 'Mancate Prestazioni';
+
+  @override
+  String get tag_suppressed_holidays => 'Festività Sopresse';
+
+  @override
+  String get tag_work_suspension => 'Sospensione Lavorativa';
+
+  @override
+  String get tag_accessory_times => 'Tempi Accessori';
+
+  @override
+  String get tag_paid_leave => 'Permesso Retribuito';
+
+  @override
+  String get tag_midweek_holidays => 'Festività Infrasettimanali';
+
+  @override
+  String get tag_illness => 'Malattia';
+
+  @override
+  String get tag_law_104 => '104';
+
+  @override
+  String get tag_parental_leave => 'Congedo Parentale';
+
+  @override
+  String get tag_missed_performance_adequacy => 'Mancate Prestazioni di Adeguamento';
+
+  @override
+  String get none => 'Nessuno';
 }

@@ -444,7 +444,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reset_custom_shifts_done => 'All custom shift data has been deleted.';
 
   @override
-  String get reset_app_done => 'All data has been deleted. The app will restart.';
+  String get reset_app_done => 'All data has been deleted.';
 
   @override
   String get visibility_reset_confirm => 'Confirm visibility reset';
@@ -526,4 +526,43 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sunday => 'Sun';
+
+  @override
+  String get tag_holidays => 'Holidays';
+
+  @override
+  String get tag_rest => 'Days Off';
+
+  @override
+  String get tag_missed_performance => 'Missed Performances';
+
+  @override
+  String get tag_suppressed_holidays => 'Suppressed Holidays';
+
+  @override
+  String get tag_work_suspension => 'Work Suspension';
+
+  @override
+  String get tag_accessory_times => 'Accessory Times';
+
+  @override
+  String get tag_paid_leave => 'Paid Leave';
+
+  @override
+  String get tag_midweek_holidays => 'Midweek Holidays';
+
+  @override
+  String get tag_illness => 'Sickness';
+
+  @override
+  String get tag_law_104 => 'Law 104';
+
+  @override
+  String get tag_parental_leave => 'Parental Leave';
+
+  @override
+  String get tag_missed_performance_adequacy => 'Missed Performance Adjustments';
+
+  @override
+  String get none => 'None';
 }

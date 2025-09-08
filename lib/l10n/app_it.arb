@@ -216,5 +216,18 @@
     "thursday": "Gio",
     "friday": "Ven",
     "saturday": "Sab",
-    "sunday": "Dom"
+    "sunday": "Dom",
+    "tag_holidays": "Ferie",
+    "tag_rest": "Riposi",
+    "tag_missed_performance": "Mancate Prestazioni",
+    "tag_suppressed_holidays": "Festività Sopresse",
+    "tag_work_suspension": "Sospensione Lavorativa",
+    "tag_accessory_times": "Tempi Accessori",
+    "tag_paid_leave": "Permesso Retribuito",
+    "tag_midweek_holidays": "Festività Infrasettimanali",
+    "tag_illness": "Malattia",
+    "tag_law_104": "104",
+    "tag_parental_leave": "Congedo Parentale",
+    "tag_missed_performance_adequacy": "Mancate Prestazioni di Adeguamento",
+    "none": "Nessuno"
 }

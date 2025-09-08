@@ -279,6 +279,37 @@ class _MyHomePageState extends State<MyHomePage> {
     'Mancate Prestazioni di Adeguamento',
   ];
 
+  String getTagLabel(BuildContext context, String tag) {
+    switch (tag) {
+      case 'Ferie':
+        return AppLocalizations.of(context)!.tag_holidays;
+      case 'Riposo':
+        return AppLocalizations.of(context)!.tag_rest;
+      case 'Mancate prestazioni':
+        return AppLocalizations.of(context)!.tag_missed_performance;
+      case 'Festività sopresse':
+        return AppLocalizations.of(context)!.tag_suppressed_holidays;
+      case 'Sospensione lavorativa':
+        return AppLocalizations.of(context)!.tag_work_suspension;
+      case 'Tempi accessori':
+        return AppLocalizations.of(context)!.tag_accessory_times;
+      case 'Permesso retribuito':
+        return AppLocalizations.of(context)!.tag_paid_leave;
+      case 'Festività infrasettimanali':
+        return AppLocalizations.of(context)!.tag_midweek_holidays;
+      case 'Malattia':
+        return AppLocalizations.of(context)!.tag_illness;
+      case '104':
+        return AppLocalizations.of(context)!.tag_law_104;
+      case 'Congedo parentale':
+        return AppLocalizations.of(context)!.tag_parental_leave;
+      case 'Mancate Prestazioni di Adeguamento':
+        return AppLocalizations.of(context)!.tag_missed_performance_adequacy;
+      default:
+        return tag;
+    }
+  }
+
   void _onCalendarMonthChanged(int delta) {
     setState(() {
       _calendarFocusedMonth = DateTime(
@@ -518,6 +549,12 @@ class _MyHomePageState extends State<MyHomePage> {
                               break;
                             case 'en':
                               label = 'English';
+                              break;
+                            case 'es':
+                              label = 'Español';
+                              break;
+                            case 'fr':
+                              label = 'Français';
                               break;
                             default:
                               label = locale.languageCode;
@@ -2070,12 +2107,37 @@ class _MyHomePageState extends State<MyHomePage> {
                                   runSpacing: 6,
                                   children: List.generate(12, (i) {
                                     final m = i + 1;
-                                    return ChoiceChip(
-                                      label: Text(DateFormat.MMM('it_IT').format(DateTime(2000, m))),
-                                      selected: tempMonth == m,
-                                      onSelected: (_) {
-                                        setState(() => tempMonth = m);
-                                      },
+                                    return GestureDetector(
+                                      onTap: () => setState(() => tempMonth = m),
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                        decoration: BoxDecoration(
+                                          color: tempMonth == m
+                                              ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
+                                              : Colors.transparent,
+                                          borderRadius: BorderRadius.circular(18),
+                                          border: Border.all(
+                                            color: tempMonth == m
+                                                ? Theme.of(context).colorScheme.primary
+                                                : Colors.grey.shade400,
+                                            width: tempMonth == m ? 2 : 1,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              DateFormat.MMM(Localizations.localeOf(context).toString()).format(DateTime(2000, m)),
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                color: tempMonth == m
+                                                    ? Theme.of(context).colorScheme.primary
+                                                    : Theme.of(context).textTheme.bodyLarge?.color,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     );
                                   }),
                                 ),
@@ -2614,7 +2676,6 @@ class _MyHomePageState extends State<MyHomePage> {
     final luogoIniziale = _luogoController.text;
     final luogoFinale = _luogoFinaleController.text;
     final note = _noteController.text;
-    // --- CAMBIO: usa _selectedTag come campo tag ---
     final tag = _selectedTag ?? '';
     final data = [
       turno,
@@ -2892,7 +2953,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         children: [
                                           Expanded(
                                             child: Text(
-                                              tag,
+                                              getTagLabel(context, tag),
                                               style: const TextStyle(
                                                 fontSize: 16,
                                               ),
@@ -3422,7 +3483,7 @@ class MonthSwitcher extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
             child: Text(
-              DateFormat.yMMMM('it_IT').format(focusedMonth),
+              DateFormat.yMMMM(Localizations.localeOf(context).toString()).format(focusedMonth),
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
@@ -3689,6 +3750,37 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
     '104',
     'Congedo parentale',
   ];
+
+  String getTagLabel(BuildContext context, String tag) {
+    switch (tag) {
+      case 'Ferie':
+        return AppLocalizations.of(context)!.tag_holidays;
+      case 'Riposo':
+        return AppLocalizations.of(context)!.tag_rest;
+      case 'Mancate prestazioni':
+        return AppLocalizations.of(context)!.tag_missed_performance;
+      case 'Festività sopresse':
+        return AppLocalizations.of(context)!.tag_suppressed_holidays;
+      case 'Sospensione lavorativa':
+        return AppLocalizations.of(context)!.tag_work_suspension;
+      case 'Tempi accessori':
+        return AppLocalizations.of(context)!.tag_accessory_times;
+      case 'Permesso retribuito':
+        return AppLocalizations.of(context)!.tag_paid_leave;
+      case 'Festività infrasettimanali':
+        return AppLocalizations.of(context)!.tag_midweek_holidays;
+      case 'Malattia':
+        return AppLocalizations.of(context)!.tag_illness;
+      case '104':
+        return AppLocalizations.of(context)!.tag_law_104;
+      case 'Congedo parentale':
+        return AppLocalizations.of(context)!.tag_parental_leave;
+      case 'Mancate Prestazioni di Adeguamento':
+        return AppLocalizations.of(context)!.tag_missed_performance_adequacy;
+      default:
+        return tag;
+    }
+  }
 
   @override
   void initState() {
@@ -4026,7 +4118,11 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
                                   .map(
                                     (tag) => DropdownMenuItem(
                                       value: tag,
-                                      child: Text(tag),
+                                      child: Text(
+                                        tag == 'Nessuno'
+                                          ? AppLocalizations.of(context)!.none
+                                          : getTagLabel(context, tag),
+                                      ),
                                     ),
                                   )
                                   .toList(),
@@ -4527,7 +4623,7 @@ class _CalendarScreenState extends State<_CalendarScreen> {
     return FutureBuilder<Map<String, String>>(
       future: _loadTurniPerMese(_focusedMonth),
       builder: (context, snapshot) {
-        final List<String> _giorniSettimana = [
+        final List<String> giorniSettimana = [
           AppLocalizations.of(context)!.monday,
           AppLocalizations.of(context)!.tuesday,
           AppLocalizations.of(context)!.wednesday,
@@ -4546,7 +4642,7 @@ class _CalendarScreenState extends State<_CalendarScreen> {
               padding: const EdgeInsets.only(bottom: 4),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: _giorniSettimana
+                children: giorniSettimana
                     .map(
                       (g) => Expanded(
                         child: Center(

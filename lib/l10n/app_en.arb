@@ -216,5 +216,18 @@
     "thursday": "Thu",
     "friday": "Fri",
     "saturday": "Sat",
-    "sunday": "Sun"
+    "sunday": "Sun",
+    "tag_holidays": "Holidays",
+    "tag_rest": "Days Off",
+    "tag_missed_performance": "Missed Performances",
+    "tag_suppressed_holidays": "Suppressed Holidays",
+    "tag_work_suspension": "Work Suspension",
+    "tag_accessory_times": "Accessory Times",
+    "tag_paid_leave": "Paid Leave",
+    "tag_midweek_holidays": "Midweek Holidays",
+    "tag_illness": "Sickness",
+    "tag_law_104": "Law 104",
+    "tag_parental_leave": "Parental Leave",
+    "tag_missed_performance_adequacy": "Missed Performance Adjustments",
+    "none": "None"
 }

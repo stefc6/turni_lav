@@ -6,6 +6,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_en.dart';
+import 'app_localizations_es.dart';
+import 'app_localizations_fr.dart';
 import 'app_localizations_it.dart';
 
 // ignore_for_file: type=lint
@@ -92,6 +94,8 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
+    Locale('es'),
+    Locale('fr'),
     Locale('it')
   ];
 
@@ -944,7 +948,7 @@ abstract class AppLocalizations {
   /// No description provided for @reset_app_done.
   ///
   /// In en, this message translates to:
-  /// **'All data has been deleted. The app will restart.'**
+  /// **'All data has been deleted.'**
   String get reset_app_done;
 
   /// No description provided for @visibility_reset_confirm.
@@ -1108,6 +1112,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sun'**
   String get sunday;
+
+  /// No description provided for @tag_holidays.
+  ///
+  /// In en, this message translates to:
+  /// **'Holidays'**
+  String get tag_holidays;
+
+  /// No description provided for @tag_rest.
+  ///
+  /// In en, this message translates to:
+  /// **'Days Off'**
+  String get tag_rest;
+
+  /// No description provided for @tag_missed_performance.
+  ///
+  /// In en, this message translates to:
+  /// **'Missed Performances'**
+  String get tag_missed_performance;
+
+  /// No description provided for @tag_suppressed_holidays.
+  ///
+  /// In en, this message translates to:
+  /// **'Suppressed Holidays'**
+  String get tag_suppressed_holidays;
+
+  /// No description provided for @tag_work_suspension.
+  ///
+  /// In en, this message translates to:
+  /// **'Work Suspension'**
+  String get tag_work_suspension;
+
+  /// No description provided for @tag_accessory_times.
+  ///
+  /// In en, this message translates to:
+  /// **'Accessory Times'**
+  String get tag_accessory_times;
+
+  /// No description provided for @tag_paid_leave.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid Leave'**
+  String get tag_paid_leave;
+
+  /// No description provided for @tag_midweek_holidays.
+  ///
+  /// In en, this message translates to:
+  /// **'Midweek Holidays'**
+  String get tag_midweek_holidays;
+
+  /// No description provided for @tag_illness.
+  ///
+  /// In en, this message translates to:
+  /// **'Sickness'**
+  String get tag_illness;
+
+  /// No description provided for @tag_law_104.
+  ///
+  /// In en, this message translates to:
+  /// **'Law 104'**
+  String get tag_law_104;
+
+  /// No description provided for @tag_parental_leave.
+  ///
+  /// In en, this message translates to:
+  /// **'Parental Leave'**
+  String get tag_parental_leave;
+
+  /// No description provided for @tag_missed_performance_adequacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Missed Performance Adjustments'**
+  String get tag_missed_performance_adequacy;
+
+  /// No description provided for @none.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get none;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
@@ -1119,7 +1201,7 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'it'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'es', 'fr', 'it'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -1131,6 +1213,8 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
     case 'en': return AppLocalizationsEn();
+    case 'es': return AppLocalizationsEs();
+    case 'fr': return AppLocalizationsFr();
     case 'it': return AppLocalizationsIt();
   }
 
