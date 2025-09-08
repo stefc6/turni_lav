@@ -23,6 +23,9 @@ Un'applicazione per le gestione dei propri turni lavorativi (presenta funzionali
 - [ ] iOS Release
 - [ ] Backup iCloud
 
+# Lingue
+Attualmente le lingue disponibili sono Italiano, Inglese, Francese e Spagnolo. Le traduzioni possono contenere errori i quali si prega di segnalare.
+
 # Piattaforme
 - Android  (Disponibile - in sviluppo)
 - Windows  (Disponibile - in sviluppo)
