@@ -2113,7 +2113,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                         decoration: BoxDecoration(
                                           color: tempMonth == m
-                                              ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
+                                              ? Theme.of(context).colorScheme.primary.withAlpha((255 * 0.18).round())
                                               : Colors.transparent,
                                           borderRadius: BorderRadius.circular(18),
                                           border: Border.all(
@@ -2661,9 +2661,10 @@ class _MyHomePageState extends State<MyHomePage> {
     final durataStr = _durataTurnoSelezionato != null
       ? '${_durataTurnoSelezionato!.inHours.toString().padLeft(2, '0')}:${(_durataTurnoSelezionato!.inMinutes % 60).toString().padLeft(2, '0')}'
       : '${oreDiLavoroPredefinite.inHours.toString().padLeft(2, '0')}:${(oreDiLavoroPredefinite.inMinutes % 60).toString().padLeft(2, '0')}';
-    final straordinarioStr = (_straordinarioEditValue != null && _straordinarioEditValue!.isNotEmpty)
+    final straordinarioRaw = (_straordinarioEditValue != null && _straordinarioEditValue!.isNotEmpty)
       ? _straordinarioEditValue!
       : _straordinarioHHmm;
+    final straordinarioStr = (straordinarioRaw.isEmpty || straordinarioRaw == '--:--') ? '00:00' : straordinarioRaw;
     final pauseList = _pauseNonRetribuite.map((p) {
       final diff = p['inizio'] != null && p['fine'] != null
           ? _calcolaDiff(p['inizio'], p['fine'])
@@ -3356,6 +3357,7 @@ class DayDataStorage {
         'luogoIniziale': parts[6],
         'luogoFinale': parts[7],
         'note': parts[8],
+        'tag': parts[9],
       };
     }
     // Vecchio formato: meno campi, riempi i mancanti con stringa vuota
@@ -3369,6 +3371,7 @@ class DayDataStorage {
       'luogoIniziale': parts.length > 6 ? parts[6] : '',
       'luogoFinale': parts.length > 7 ? parts[7] : '',
       'note': parts.length > 8 ? parts[8] : '',
+      'tag': parts.length > 9 ? parts[9] : '',
     };
   }
 }
@@ -3849,13 +3852,20 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
     final durata = _durataController.text.trim().isNotEmpty
         ? _durataController.text.trim()
         : _durataStringFromDuration(widget.oreDiLavoroPredefinite);
+    String durataNorm = durata;
+    final durataRegExp = RegExp(r'^(\d+)\s*ore$');
+    final match = durataRegExp.firstMatch(durata);
+    if (match != null) {
+      final ore = int.tryParse(match.group(1) ?? '0') ?? 0;
+      durataNorm = '${ore.toString().padLeft(2, '0')}:00';
+    }
     final luogoIniziale = _luogoInizialeController.text.trim();
     final luogoFinale = _luogoFinaleController.text.trim();
     final tag = _selectedTag;
     final data = [
       inizio,
       fine,
-      durata,
+      durataNorm,
       luogoIniziale,
       luogoFinale,
       tag,
@@ -4291,7 +4301,7 @@ class _ModificaPausaDialogState extends State<_ModificaPausaDialog> {
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                AppLocalizations.of(context)!.duration2( '${_calcolaDiff()}'),
+                AppLocalizations.of(context)!.duration2(_calcolaDiff()),
                 style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
               ),
             ),
@@ -4580,22 +4590,31 @@ class _CalendarScreenState extends State<_CalendarScreen> {
 
   List<DateTime> _getDaysForMonth(DateTime? month) {
     if (month == null) {
-      // Fallback: mostra il mese corrente
       final now = DateTime.now();
-
       month = DateTime(now.year, now.month, 1);
     }
-    // Primo giorno del mese
     final firstDayOfMonth = DateTime(month.year, month.month, 1);
-    // Calcola il giorno della settimana del primo giorno (lunedì=1, domenica=7)
+    final lastDayOfMonth = DateTime(month.year, month.month + 1, 0);
+
+    // Calcola il primo lunedì da mostrare
     int startWeekday = firstDayOfMonth.weekday;
-    // Flutter: weekday 1 = lunedì, 7 = domenica
-    // Calcola il primo giorno da mostrare (lunedì della prima settimana)
-    final firstToShow = firstDayOfMonth.subtract(
-      Duration(days: startWeekday - 1),
-    );
-    // 6 righe x 7 giorni = 42 celle
-    return List.generate(42, (i) => firstToShow.add(Duration(days: i)));
+    final firstToShow =
+        firstDayOfMonth.subtract(Duration(days: startWeekday - 1));
+
+    // Calcola l'ultimo giorno da mostrare (domenica dell'ultima settimana)
+    int endWeekday = lastDayOfMonth.weekday;
+    final lastToShow = endWeekday == DateTime.sunday
+        ? lastDayOfMonth
+        : lastDayOfMonth.add(Duration(days: DateTime.sunday - endWeekday));
+
+    // Calcola il numero totale di giorni da mostrare in modo sicuro rispetto al DST
+    final totalDays = DateTime.utc(lastToShow.year, lastToShow.month, lastToShow.day)
+            .difference(DateTime.utc(firstToShow.year, firstToShow.month, firstToShow.day))
+            .inDays +
+        1;
+        
+    // Genera la lista dei giorni incrementando il giorno, non aggiungendo una durata
+    return List.generate(totalDays, (i) => DateTime(firstToShow.year, firstToShow.month, firstToShow.day + i));
   }
 
   // Carica i dati dei turni per tutte le giornate del mese visualizzato
@@ -5893,6 +5912,7 @@ Future<void> esportaBackup(BuildContext context) async {
     // Scegli destinazione file
     String? savePath;
     if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+      if (!context.mounted) return;
       final result = await FilePicker.platform.saveFile(
         dialogTitle: AppLocalizations.of(context)!.where_to_save_backup,
         fileName: 'backup_turni_lav.json',
@@ -5943,12 +5963,14 @@ Future<void> importaBackup(
     final prefs = await SharedPreferences.getInstance();
 
     await resetTurniPerBackup();
+    if (!context.mounted) return;
+    await resetPersonalizzaTurni(context);
 
     bool isJson = false;
     Map<String, dynamic> backupData = {};
     try {
       backupData = jsonDecode(content);
-      isJson = backupData.containsKey('§Variabili§');
+      isJson = backupData.containsKey('§VariabiliAnnuali§') || backupData.containsKey('§Variabili§');
     } catch (_) {
       isJson = false;
     }
@@ -6251,6 +6273,7 @@ Future<void> resetTotale(BuildContext context) async {
   );
   if (confermato == true) {
     // SECONDO DIALOG DI CONFERMA
+    if (!context.mounted) return;
     final doppiaConferma = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
