@@ -5842,6 +5842,10 @@ class _BackupScreen extends StatelessWidget {
 // --- INIZIO: Funzioni di backup/ripristino con prefissi corretti ---
 Future<void> esportaBackup(BuildContext context) async {
   try {
+    final now = DateTime.now();
+    final formattedDate = DateFormat('yyyyMMdd_HHmmss').format(now);
+    final fileName = 'backupTL_$formattedDate.json';
+    
     final prefs = await SharedPreferences.getInstance();
     final allKeys = prefs.getKeys();
     final anniSet = <int>{};
@@ -5915,7 +5919,7 @@ Future<void> esportaBackup(BuildContext context) async {
       if (!context.mounted) return;
       final result = await FilePicker.platform.saveFile(
         dialogTitle: AppLocalizations.of(context)!.where_to_save_backup,
-        fileName: 'backup_turni_lav.json',
+        fileName: fileName,
         type: FileType.custom,
         allowedExtensions: ['json'],
       );
@@ -5929,10 +5933,10 @@ Future<void> esportaBackup(BuildContext context) async {
       savePath = result;
     } else if (Platform.isAndroid) {
       String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
-      savePath = '$selectedDirectory/backup_turni_lav.json';
+      savePath = '$selectedDirectory/$fileName';
     } else {
       final dir = await getApplicationDocumentsDirectory();
-      savePath = '${dir.path}/backup_turni_lav.json';
+      savePath = '${dir.path}/$fileName';
     }
     final file = File(savePath);
     await file.writeAsString(const JsonEncoder.withIndent('  ').convert(backupJson));
