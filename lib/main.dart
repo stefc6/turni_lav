@@ -2631,6 +2631,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<int> _calcolaFerieRimasteAnno(int year) async {
     final ferieDisp = await _loadFerieDisponibiliAnno(year);
     final ferieUsufr = await _loadFerieUsufruiteAnno(year);
+    final mpa = await _loadMancPrestAdegAnno(year);
   
     int ferieRimastePrec = 0;
     if (year > 2000) {
@@ -2640,7 +2641,7 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     }
   
-    return ferieDisp + ferieRimastePrec - ferieUsufr;
+    return ferieDisp - mpa + ferieRimastePrec - ferieUsufr;
   }
 
   Future<void> _loadExitDialogPref() async {
