@@ -25,9 +25,9 @@ jobs:
       - name: Decode keystore and create key.properties
         run: |
           # Crea il file keystore dalla stringa Base64
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/my_release_key.jks
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/turni_lav_key.jks
           # Crea il file key.properties
-          echo "storeFile=my_release_key.jks" > android/key.properties
+          echo "storeFile=turni_lav_key.jks" > android/key.properties
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
           echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> android/key.properties
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
