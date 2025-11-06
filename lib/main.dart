@@ -2744,9 +2744,11 @@ class _MyHomePageState extends State<MyHomePage> {
         Brightness.dark;
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
-        statusBarColor: ThemeData().colorScheme.primary,
+        statusBarColor: Theme.of(context).colorScheme.primary, // Colore della barra di stato
         statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
         statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+        systemNavigationBarColor: Theme.of(context).scaffoldBackgroundColor, // Colore sotto la pillola di navigazione
+        systemNavigationBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
       ),
     );
     return PopScope(
