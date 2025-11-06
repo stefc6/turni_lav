@@ -4,7 +4,6 @@ Un'applicazione per le gestione dei propri turni lavorativi (presenta funzionali
 
 # Come installare
 - Su android scaricare ed installare il file APK. Potrebbe essere necessario abilitare l'installazione di app da fonti terze.
-  All'uscita della versione stabile 1.0 provvederò a rilasciarlo anche sul Google Play Store.
 
 - Su windows scaricare ed estrarre in una cartella a piacere il file ZIP. Eseguire il file EXE all'interno della cartella appena estratta.
 
@@ -32,6 +31,8 @@ Attualmente le lingue disponibili sono Italiano, Inglese, Francese e Spagnolo. L
 - Linux  (Disponibile - in sviluppo)
 - iOS  (In arrivo)
 - macOS  (In arrivo)
+
+Non appena avrò la possibilità di effettuare il testing sulle piattaforme mancanti, provvederò ad un rilascio sui principali store di app il prima possibile.
 
 ---
 Questo è un progetto Flutter
