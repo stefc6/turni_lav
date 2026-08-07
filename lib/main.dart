@@ -18,7 +18,6 @@ void main() async {
     windowManager.waitUntilReadyToShow().then((_) async {
       await windowManager.setSize(const Size(534, 950));
       await windowManager.setTitle('Turni Lavoro');
-            // Ottieni info sullo schermo principale
       final display = await windowManager.getBounds();
       final screenHeight = display.size.height;
 
@@ -448,17 +447,10 @@ class _MyHomePageState extends State<MyHomePage> {
                           AppLocalizations.of(context)!.overtime_2,
                           style: TextStyle(fontWeight: FontWeight.w600),
                         ),
-                        if (neg)
-                          const Text(
-                            '-',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
+                        const SizedBox(width: 8),
                         Text(
-                          '${ore.toString().padLeft(2, '0')}:${minuti.toString().padLeft(2, '0')}',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
+                          current,
+                          style: const TextStyle(fontWeight: FontWeight.w500),
                         ),
                       ],
                     ),
@@ -665,21 +657,16 @@ class _MyHomePageState extends State<MyHomePage> {
                         turniDisponibili: [],
                         onSelezionaTurno: (nome, dati) {
                           if (dati != null) {
-                            final parts = dati.split('|');
+                            final record = TurnoRecord.fromRaw(dati);
                             setState(() {
-                              _inizio =
-                                  (parts.isNotEmpty && parts[0].isNotEmpty)
-                                  ? _parseTimeOfDay(parts[0])
+                              _inizio = record.inizio.isNotEmpty
+                                  ? _parseTimeOfDay(record.inizio)
                                   : null;
-                              _fine = (parts.length > 1 && parts[1].isNotEmpty)
-                                  ? _parseTimeOfDay(parts[1])
+                              _fine = record.fine.isNotEmpty
+                                  ? _parseTimeOfDay(record.fine)
                                   : null;
-                              _luogoController.text = parts.length > 3
-                                  ? parts[3]
-                                  : '';
-                              _luogoFinaleController.text = parts.length > 4
-                                  ? parts[4]
-                                  : '';
+                              _luogoController.text = record.luogoIniziale;
+                              _luogoFinaleController.text = record.luogoFinale;
                             });
                           }
                         },
@@ -2227,26 +2214,27 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           onPressed: () async {
                             final result =
-                                await showDialog<Map<String, String>?>(
+                                await showDialog<Map<String, dynamic>?>(
                                   context: context,
                                   builder: (context) => SelezionaTurnoDialog(),
                                 );
                             if (result != null && result['nome'] != null) {
-                              final dati = result['dati'] ?? '';
-                              final parts = dati.split('|');
+                              final record = result['record'] is TurnoRecord
+                                  ? result['record'] as TurnoRecord
+                                  : (result['record'] is Map
+                                      ? TurnoRecord.fromJson(Map<String, dynamic>.from(result['record'] as Map))
+                                      : TurnoRecord.empty());
                               setState(() {
                                 _selectedTurnoName = result['nome'];
-                                _inizio =
-                                    (parts.isNotEmpty && parts[0].isNotEmpty)
-                                    ? _parseTimeOfDay(parts[0])
+                                _inizio = record.inizio.isNotEmpty
+                                    ? _parseTimeOfDay(record.inizio)
                                     : null;
-                                _fine =
-                                    (parts.length > 1 && parts[1].isNotEmpty)
-                                    ? _parseTimeOfDay(parts[1])
+                                _fine = record.fine.isNotEmpty
+                                    ? _parseTimeOfDay(record.fine)
                                     : null;
                                 // Durata
-                                if (parts.length > 2 && parts[2].isNotEmpty) {
-                                  final durataParts = parts[2].split(':');
+                                if (record.durata.isNotEmpty) {
+                                  final durataParts = record.durata.split(':');
                                   if (durataParts.length == 2) {
                                     final ore =
                                         int.tryParse(durataParts[0]) ?? 0;
@@ -2262,16 +2250,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                 } else {
                                   _durataTurnoSelezionato = null;
                                 }
-                                _luogoController.text = parts.length > 3
-                                    ? parts[3]
-                                    : '';
-                                _luogoFinaleController.text = parts.length > 4
-                                    ? parts[4]
-                                    : '';
-                                // --- AGGIUNTA: estrai il tag dal campo 6 del turno predefinito ---
-                                _selectedTag = parts.length > 5
-                                    ? parts[5]
-                                    : null;
+                                _luogoController.text = record.luogoIniziale;
+                                _luogoFinaleController.text = record.luogoFinale;
+                                _selectedTag = record.tag.isNotEmpty
+                                    ? record.tag
+                                    : 'Nessuno';
                                 _straordinarioEditValue = null;
                               });
                             }
@@ -2666,31 +2649,32 @@ class _MyHomePageState extends State<MyHomePage> {
       ? _straordinarioEditValue!
       : _straordinarioHHmm;
     final straordinarioStr = (straordinarioRaw.isEmpty || straordinarioRaw == '--:--') ? '00:00' : straordinarioRaw;
-    final pauseList = _pauseNonRetribuite.map((p) {
-      final diff = p['inizio'] != null && p['fine'] != null
-          ? _calcolaDiff(p['inizio'], p['fine'])
-          : '--:--';
-      return '${p['inizio'] ?? ''}-${p['fine'] ?? ''};$diff';
-    }).toList();
-    final pauseStr = 'Tause[${pauseList.join(';')}]';
-    final sommaPause = calcolaTotalePause();
-    final pauseField = '$pauseStr;$sommaPause';
+    final pauses = _pauseNonRetribuite
+        .map(
+          (pause) => DayPauseRecord(
+            inizio: pause['inizio'] ?? '',
+            fine: pause['fine'] ?? '',
+            durata: pause['durata'] ?? '--:--',
+          ),
+        )
+        .where((pause) => pause.inizio.isNotEmpty || pause.fine.isNotEmpty)
+        .toList(growable: false);
     final luogoIniziale = _luogoController.text;
     final luogoFinale = _luogoFinaleController.text;
     final note = _noteController.text;
     final tag = _selectedTag ?? '';
-    final data = [
-      turno,
-      inizioStr,
-      fineStr,
-      durataStr,
-      straordinarioStr,
-      pauseField,
-      luogoIniziale,
-      luogoFinale,
-      note,
-      tag, // campo tag
-    ].join('|');
+    final data = DayDataRecord(
+      turno: turno,
+      inizio: inizioStr,
+      fine: fineStr,
+      durata: durataStr,
+      straordinario: straordinarioStr,
+      pause: pauses,
+      luogoIniziale: luogoIniziale,
+      luogoFinale: luogoFinale,
+      note: note,
+      tag: tag,
+    );
     await DayDataStorage.saveDayData(dataKey, data);
     setState(() {
       _selectedSection = DrawerSection.calendar;
@@ -2877,7 +2861,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         ),
                                       ],
                                     ),
-                                  ), // Padding
+                                  ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
                                       vertical: 8.0,
@@ -2985,25 +2969,20 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                             ),
                             actions: [
-                              Row(
-                                children: [
-                                  TextButton(
-                                    onPressed: () async {
-                                      await resetVisibilitaRiepilogo(context);
-                                      await _loadElementVisibility();
-                                      if (!context.mounted) return;
-                                      setState(() {});
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text(AppLocalizations.of(context)!.restore),
-                                  ),
-                                  Spacer(),
-                                  TextButton(
-                                    onPressed: () => Navigator.of(context).pop(),
-                                    child: Text(AppLocalizations.of(context)!.close),
-                                  ),
-                                ]
-                              )
+                              TextButton(
+                                onPressed: () async {
+                                  await resetVisibilitaRiepilogo(context);
+                                  await _loadElementVisibility();
+                                  if (!context.mounted) return;
+                                  setState(() {});
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text(AppLocalizations.of(context)!.restore),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Text(AppLocalizations.of(context)!.close),
+                              ),
                             ],
                           ),
                         ),
@@ -3324,58 +3303,441 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
+String _formatMinutesAsHHmm(int totalMinutes) {
+  final sign = totalMinutes < 0 ? '-' : '';
+  final absMinutes = totalMinutes.abs();
+  final hours = absMinutes ~/ 60;
+  final minutes = absMinutes % 60;
+  return '$sign${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
+}
+
+int _parseHHmmToMinutes(String value) {
+  final parts = value.split(':');
+  if (parts.length != 2) return 0;
+  final hours = int.tryParse(parts[0]) ?? 0;
+  final minutes = int.tryParse(parts[1]) ?? 0;
+  return hours * 60 + minutes;
+}
+
+List<DayPauseRecord> _parseLegacyPauseList(String pauseField) {
+  if (!pauseField.startsWith('Tause[')) return const <DayPauseRecord>[];
+  final endIdx = pauseField.indexOf(']');
+  if (endIdx == -1) return const <DayPauseRecord>[];
+  final inside = pauseField.substring(6, endIdx);
+  if (inside.isEmpty) return const <DayPauseRecord>[];
+  final matches = RegExp(r'(\d{2}:\d{2})-(\d{2}:\d{2});(\d{2}:\d{2})').allMatches(inside);
+  return matches
+      .map(
+        (match) => DayPauseRecord(
+          inizio: match.group(1) ?? '',
+          fine: match.group(2) ?? '',
+          durata: match.group(3) ?? '--:--',
+        ),
+      )
+      .where((pause) => pause.inizio.isNotEmpty || pause.fine.isNotEmpty)
+      .toList(growable: false);
+}
+
+@immutable
+class DayPauseRecord {
+  final String inizio;
+  final String fine;
+  final String durata;
+
+  const DayPauseRecord({
+    required this.inizio,
+    required this.fine,
+    required this.durata,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'inizio': inizio,
+      'fine': fine,
+      'durata': durata,
+    };
+  }
+
+  static DayPauseRecord? fromJson(dynamic value) {
+    if (value is Map) {
+      final map = Map<String, dynamic>.from(value);
+      final inizio = (map['inizio'] ?? '').toString();
+      final fine = (map['fine'] ?? '').toString();
+      final durata = (map['durata'] ?? '--:--').toString();
+      if (inizio.isEmpty && fine.isEmpty) return null;
+      return DayPauseRecord(inizio: inizio, fine: fine, durata: durata);
+    }
+    if (value is String) {
+      final pieces = value.split(';');
+      final range = pieces.isNotEmpty ? pieces[0] : '';
+      final dash = range.indexOf('-');
+      if (dash > 0) {
+        return DayPauseRecord(
+          inizio: range.substring(0, dash),
+          fine: range.substring(dash + 1),
+          durata: pieces.length > 1 ? pieces[1] : '--:--',
+        );
+      }
+    }
+    return null;
+  }
+
+  String get durationOrLegacy => durata.isEmpty ? '--:--' : durata;
+}
+
+@immutable
+class DayDataRecord {
+  final String turno;
+  final String inizio;
+  final String fine;
+  final String durata;
+  final String straordinario;
+  final List<DayPauseRecord> pause;
+  final String luogoIniziale;
+  final String luogoFinale;
+  final String note;
+  final String tag;
+
+  const DayDataRecord({
+    required this.turno,
+    required this.inizio,
+    required this.fine,
+    required this.durata,
+    required this.straordinario,
+    required this.pause,
+    required this.luogoIniziale,
+    required this.luogoFinale,
+    required this.note,
+    required this.tag,
+  });
+
+  factory DayDataRecord.empty() {
+    return const DayDataRecord(
+      turno: '',
+      inizio: '',
+      fine: '',
+      durata: '',
+      straordinario: '',
+      pause: <DayPauseRecord>[],
+      luogoIniziale: '',
+      luogoFinale: '',
+      note: '',
+      tag: '',
+    );
+  }
+
+  factory DayDataRecord.fromRaw(String raw) {
+    final trimmed = raw.trim();
+    if (trimmed.isEmpty) return DayDataRecord.empty();
+    if (trimmed.startsWith('{')) {
+      try {
+        final decoded = jsonDecode(trimmed);
+        if (decoded is Map) {
+          return DayDataRecord.fromJson(Map<String, dynamic>.from(decoded));
+        }
+      } catch (_) {
+        // Fallback al formato legacy.
+      }
+    }
+    return DayDataRecord.fromLegacy(trimmed);
+  }
+
+  factory DayDataRecord.fromJson(Map<String, dynamic> json) {
+    final pauses = <DayPauseRecord>[];
+    final jsonPause = json['pause'];
+    if (jsonPause is List) {
+      for (final item in jsonPause) {
+        final pause = DayPauseRecord.fromJson(item);
+        if (pause != null) pauses.add(pause);
+      }
+    }
+    if (pauses.isEmpty && json['pauseField'] is String) {
+      pauses.addAll(_parseLegacyPauseList(json['pauseField'] as String));
+    }
+    return DayDataRecord(
+      turno: (json['turno'] ?? '').toString(),
+      inizio: (json['inizio'] ?? '').toString(),
+      fine: (json['fine'] ?? '').toString(),
+      durata: (json['durata'] ?? '').toString(),
+      straordinario: (json['straordinario'] ?? '').toString(),
+      pause: pauses,
+      luogoIniziale: (json['luogoIniziale'] ?? '').toString(),
+      luogoFinale: (json['luogoFinale'] ?? '').toString(),
+      note: (json['note'] ?? '').toString(),
+      tag: (json['tag'] ?? '').toString(),
+    );
+  }
+
+  factory DayDataRecord.fromLegacy(String raw) {
+    final parts = raw.split('|');
+    final pauseField = parts.length > 5 ? parts[5] : '';
+    return DayDataRecord(
+      turno: parts.isNotEmpty ? parts[0] : '',
+      inizio: parts.length > 1 ? parts[1] : '',
+      fine: parts.length > 2 ? parts[2] : '',
+      durata: parts.length > 3 ? parts[3] : '',
+      straordinario: parts.length > 4 ? parts[4] : '',
+      pause: _parseLegacyPauseList(pauseField),
+      luogoIniziale: parts.length > 6 ? parts[6] : '',
+      luogoFinale: parts.length > 7 ? parts[7] : '',
+      note: parts.length > 8 ? parts[8] : '',
+      tag: parts.length > 9 ? parts[9] : '',
+    );
+  }
+
+  static DayDataRecord? fromBackupValue(dynamic value) {
+    if (value is String) {
+      return DayDataRecord.fromRaw(value);
+    }
+    if (value is Map) {
+      final map = Map<String, dynamic>.from(value);
+      if (map['record'] is Map) {
+        return DayDataRecord.fromJson(Map<String, dynamic>.from(map['record'] as Map));
+      }
+      if (map['legacy'] is String) {
+        return DayDataRecord.fromRaw(map['legacy'] as String);
+      }
+      return DayDataRecord.fromJson(map);
+    }
+    return null;
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'schemaVersion': 2,
+      'turno': turno,
+      'inizio': inizio,
+      'fine': fine,
+      'durata': durata,
+      'straordinario': straordinario,
+      'pause': pause.map((entry) => entry.toJson()).toList(),
+      'luogoIniziale': luogoIniziale,
+      'luogoFinale': luogoFinale,
+      'note': note,
+      'tag': tag,
+    };
+  }
+
+  Map<String, String> toMap() {
+    return {
+      'turno': turno,
+      'inizio': inizio,
+      'fine': fine,
+      'durata': durata,
+      'straordinario': straordinario,
+      'pauseField': _legacyPauseField,
+      'luogoIniziale': luogoIniziale,
+      'luogoFinale': luogoFinale,
+      'note': note,
+      'tag': tag,
+    };
+  }
+
+  String toLegacyString() {
+    return [
+      turno,
+      inizio,
+      fine,
+      durata,
+      straordinario,
+      _legacyPauseField,
+      luogoIniziale,
+      luogoFinale,
+      note,
+      tag,
+    ].join('|');
+  }
+
+  String get _legacyPauseField {
+    final pauseParts = pause
+        .map((entry) => '${entry.inizio}-${entry.fine};${entry.durationOrLegacy}')
+        .join(';');
+    final totalMinutes = pause.fold<int>(0, (sum, entry) => sum + _parseHHmmToMinutes(entry.durationOrLegacy));
+    final totalString = totalMinutes == 0 ? '' : _formatMinutesAsHHmm(totalMinutes);
+    return 'Tause[$pauseParts]${totalString.isEmpty ? '' : ';$totalString'}';
+  }
+}
+
 // Classe per gestire il salvataggio e recupero dati per ogni giornata
 class DayDataStorage {
-  static Future<void> saveDayData(String date, String data) async {
+  static Future<void> saveDayData(String date, dynamic data) async {
     final prefs = await SharedPreferences.getInstance();
-    if (data.isEmpty) {
+    if (data == null || data is String && data.isEmpty) {
       await prefs.remove('daydata_$date');
-    } else {
-      await prefs.setString('daydata_$date', data);
+      return;
     }
+
+    if (data is DayDataRecord) {
+      await prefs.setString('daydata_$date', jsonEncode(data.toJson()));
+      return;
+    }
+
+    if (data is Map<String, dynamic>) {
+      await prefs.setString('daydata_$date', jsonEncode(DayDataRecord.fromJson(data).toJson()));
+      return;
+    }
+
+    await prefs.setString('daydata_$date', data.toString());
   }
 
   static Future<String?> loadDayData(String date) async {
+    final record = await loadDayDataRecord(date);
+    return record?.toLegacyString();
+  }
+
+  static Future<DayDataRecord?> loadDayDataRecord(String date) async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('daydata_$date');
+    final raw = prefs.getString('daydata_$date');
+    if (raw == null || raw.isEmpty) return null;
+    return DayDataRecord.fromRaw(raw);
   }
 
   /// Carica i dati della giornata e li restituisce come mappa dei campi.
-  /// Supporta sia il nuovo formato (8 campi) sia il vecchio (meno campi).
-  /// Campi: turno, inizio, fine, durata, straordinario, luogoIniziale, luogoFinale, note
   static Future<Map<String, String>?> loadDayDataParsed(String date) async {
-    final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString('daydata_$date');
-    if (raw == null) return null;
-    final parts = raw.split('|');
-    // Nuovo formato: 9 campi
-    if (parts.length >= 9) {
-      return {
-        'turno': parts[0],
-        'inizio': parts[1],
-        'fine': parts[2],
-        'durata': parts[3],
-        'straordinario': parts[4],
-        'pauseField': parts[5],
-        'luogoIniziale': parts[6],
-        'luogoFinale': parts[7],
-        'note': parts[8],
-        'tag': parts[9],
-      };
+    final record = await loadDayDataRecord(date);
+    return record?.toMap();
+  }
+}
+
+@immutable
+class TurnoRecord {
+  final String inizio;
+  final String fine;
+  final String durata;
+  final String luogoIniziale;
+  final String luogoFinale;
+  final String tag;
+
+  const TurnoRecord({
+    required this.inizio,
+    required this.fine,
+    required this.durata,
+    required this.luogoIniziale,
+    required this.luogoFinale,
+    required this.tag,
+  });
+
+  factory TurnoRecord.empty() {
+    return const TurnoRecord(
+      inizio: '',
+      fine: '',
+      durata: '',
+      luogoIniziale: '',
+      luogoFinale: '',
+      tag: 'Nessuno',
+    );
+  }
+
+  factory TurnoRecord.fromRaw(String raw) {
+    final trimmed = raw.trim();
+    if (trimmed.isEmpty) return TurnoRecord.empty();
+    if (trimmed.startsWith('{')) {
+      try {
+        final decoded = jsonDecode(trimmed);
+        if (decoded is Map) {
+          return TurnoRecord.fromJson(Map<String, dynamic>.from(decoded));
+        }
+      } catch (_) {
+        // Fallback al legacy.
+      }
     }
-    // Vecchio formato: meno campi, riempi i mancanti con stringa vuota
+    return TurnoRecord.fromLegacy(trimmed);
+  }
+
+  factory TurnoRecord.fromJson(Map<String, dynamic> json) {
+    return TurnoRecord(
+      inizio: (json['inizio'] ?? '').toString(),
+      fine: (json['fine'] ?? '').toString(),
+      durata: (json['durata'] ?? '').toString(),
+      luogoIniziale: (json['luogoIniziale'] ?? '').toString(),
+      luogoFinale: (json['luogoFinale'] ?? '').toString(),
+      tag: (json['tag'] ?? 'Nessuno').toString(),
+    );
+  }
+
+  factory TurnoRecord.fromLegacy(String raw) {
+    final parts = raw.split('|');
+    return TurnoRecord(
+      inizio: parts.isNotEmpty ? parts[0] : '',
+      fine: parts.length > 1 ? parts[1] : '',
+      durata: parts.length > 2 ? parts[2] : '',
+      luogoIniziale: parts.length > 3 ? parts[3] : '',
+      luogoFinale: parts.length > 4 ? parts[4] : '',
+      tag: parts.length > 5 && parts[5].isNotEmpty ? parts[5] : 'Nessuno',
+    );
+  }
+
+  static TurnoRecord? fromBackupValue(dynamic value) {
+    if (value is String) {
+      return TurnoRecord.fromRaw(value);
+    }
+    if (value is Map) {
+      final map = Map<String, dynamic>.from(value);
+      if (map['record'] is Map) {
+        return TurnoRecord.fromJson(Map<String, dynamic>.from(map['record'] as Map));
+      }
+      if (map['legacy'] is String) {
+        return TurnoRecord.fromRaw(map['legacy'] as String);
+      }
+      return TurnoRecord.fromJson(map);
+    }
+    return null;
+  }
+
+  Map<String, dynamic> toJson() {
     return {
-      'turno': parts.isNotEmpty ? parts[0] : '',
-      'inizio': parts.length > 1 ? parts[1] : '',
-      'fine': parts.length > 2 ? parts[2] : '',
-      'durata': parts.length > 3 ? parts[3] : '',
-      'straordinario': parts.length > 4 ? parts[4] : '',
-      'pauseField': parts.length > 5 ? parts[5] : '',
-      'luogoIniziale': parts.length > 6 ? parts[6] : '',
-      'luogoFinale': parts.length > 7 ? parts[7] : '',
-      'note': parts.length > 8 ? parts[8] : '',
-      'tag': parts.length > 9 ? parts[9] : '',
+      'schemaVersion': 2,
+      'inizio': inizio,
+      'fine': fine,
+      'durata': durata,
+      'luogoIniziale': luogoIniziale,
+      'luogoFinale': luogoFinale,
+      'tag': tag,
     };
+  }
+
+  String get previewText {
+    if (inizio.isNotEmpty && fine.isNotEmpty) {
+      return '$inizio - $fine';
+    }
+    if (inizio.isNotEmpty) return inizio;
+    if (fine.isNotEmpty) return fine;
+    return '';
+  }
+
+  String get displayDuration {
+    if (durata.isNotEmpty) return durata;
+    return '00:00';
+  }
+}
+
+class TurnoStorage {
+  static Future<void> saveTurnoRecord(String name, TurnoRecord record) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('turno_custom_$name', jsonEncode(record.toJson()));
+  }
+
+  static Future<TurnoRecord?> loadTurnoRecord(String name) async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString('turno_custom_$name');
+    if (raw == null || raw.isEmpty) return null;
+    return TurnoRecord.fromRaw(raw);
+  }
+
+  static Future<Map<String, TurnoRecord>> loadAllTurnoRecords() async {
+    final prefs = await SharedPreferences.getInstance();
+    final allKeys = prefs.getKeys();
+    final turniKeys = allKeys.where((key) => key.startsWith('turno_custom_')).toList();
+    final names = turniKeys.map((key) => key.replaceFirst('turno_custom_', '')).toList();
+    names.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+    final result = <String, TurnoRecord>{};
+    for (final name in names) {
+      final record = await loadTurnoRecord(name);
+      if (record != null) {
+        result[name] = record;
+      }
+    }
+    return result;
   }
 }
 
@@ -3571,7 +3933,7 @@ class _PersonalizzaTurniDialog extends StatefulWidget {
 }
 
 class _PersonalizzaTurniDialogState extends State<_PersonalizzaTurniDialog> {
-  Map<String, String?> _datiTurni = {};
+  Map<String, TurnoRecord> _datiTurni = {};
   bool _loading = true;
   List<String> _nomiTurni = [];
 
@@ -3582,31 +3944,8 @@ class _PersonalizzaTurniDialogState extends State<_PersonalizzaTurniDialog> {
   }
 
   Future<void> _caricaTurni() async {
-    final prefs = await SharedPreferences.getInstance();
-    final allKeys = prefs.getKeys();
-    final turniKeys = allKeys
-        .where((k) => k.startsWith('turno_custom_'))
-        .toList();
-    final nomi = turniKeys
-        .map((k) => k.replaceFirst('turno_custom_', ''))
-        .toList();
-    nomi.sort((a, b) {
-      final reg = RegExp(r'^(\\d+)');
-      final matchA = reg.firstMatch(a);
-      final matchB = reg.firstMatch(b);
-      if (matchA != null && matchB != null) {
-        return int.parse(
-          matchA.group(1)!,
-        ).compareTo(int.parse(matchB.group(1)!));
-      }
-      if (matchA != null) return -1;
-      if (matchB != null) return 1;
-      return a.toLowerCase().compareTo(b.toLowerCase());
-    });
-    Map<String, String?> dati = {};
-    for (final nome in nomi) {
-      dati[nome] = prefs.getString('turno_custom_$nome');
-    }
+    final dati = await TurnoStorage.loadAllTurnoRecords();
+    final nomi = dati.keys.toList();
     setState(() {
       _datiTurni = dati;
       _nomiTurni = nomi;
@@ -3614,12 +3953,12 @@ class _PersonalizzaTurniDialogState extends State<_PersonalizzaTurniDialog> {
     });
   }
 
-  void apriModificaTurno({String? nome, String? dati}) async {
+  void apriModificaTurno({String? nome, TurnoRecord? record}) async {
     final result = await showDialog(
       context: context,
       builder: (context) => _ModificaTurnoDialog(
         nomeTurno: nome,
-        datiSalvati: dati,
+        datiSalvati: record == null ? null : jsonEncode(record.toJson()),
         oreDiLavoroPredefinite: widget.oreDiLavoroPredefinite,
       ),
     );
@@ -3689,7 +4028,7 @@ class _PersonalizzaTurniDialogState extends State<_PersonalizzaTurniDialog> {
                                 onTap: () {
                                   apriModificaTurno(
                                     nome: nome,
-                                    dati: _datiTurni[nome],
+                                    record: _datiTurni[nome],
                                   );
                                 },
                               );
@@ -3791,27 +4130,28 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
   @override
   void initState() {
     super.initState();
-    final dati = widget.datiSalvati?.split('|') ?? [];
+    final record = widget.datiSalvati == null
+        ? TurnoRecord.empty()
+        : TurnoRecord.fromRaw(widget.datiSalvati!);
     _nomeController = TextEditingController(text: widget.nomeTurno ?? '');
-    _inizio = (dati.isNotEmpty && dati[0].isNotEmpty)
-        ? _parseTimeOfDay(dati[0])
+    _inizio = record.inizio.isNotEmpty
+        ? _parseTimeOfDay(record.inizio)
         : null;
-    _fine = (dati.length > 1 && dati[1].isNotEmpty)
-        ? _parseTimeOfDay(dati[1])
+    _fine = record.fine.isNotEmpty
+        ? _parseTimeOfDay(record.fine)
         : null;
     _durataController = TextEditingController(
-      text: (dati.length > 2 && dati[2].isNotEmpty)
-          ? dati[2]
+      text: record.durata.isNotEmpty
+          ? record.durata
           : _durataStringFromDuration(widget.oreDiLavoroPredefinite),
     );
     _luogoInizialeController = TextEditingController(
-      text: dati.length > 3 ? dati[3] : '',
+      text: record.luogoIniziale,
     );
     _luogoFinaleController = TextEditingController(
-      text: dati.length > 4 ? dati[4] : '',
+      text: record.luogoFinale,
     );
-    // Carica il tag se presente (sesto campo), altrimenti 'Nessuno'
-    _selectedTag = dati.length > 5 ? dati[5] : 'Nessuno';
+    _selectedTag = record.tag.isNotEmpty ? record.tag : 'Nessuno';
   }
 
   TimeOfDay? _parseTimeOfDay(String s) {
@@ -3865,16 +4205,17 @@ class _ModificaTurnoDialogState extends State<_ModificaTurnoDialog> {
     final luogoIniziale = _luogoInizialeController.text.trim();
     final luogoFinale = _luogoFinaleController.text.trim();
     final tag = _selectedTag;
-    final data = [
-      inizio,
-      fine,
-      durataNorm,
-      luogoIniziale,
-      luogoFinale,
-      tag,
-    ].join('|');
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('turno_custom_$nome', data);
+    await TurnoStorage.saveTurnoRecord(
+      nome,
+      TurnoRecord(
+        inizio: inizio,
+        fine: fine,
+        durata: durataNorm,
+        luogoIniziale: luogoIniziale,
+        luogoFinale: luogoFinale,
+        tag: tag,
+      ),
+    );
     if (!mounted) return;
     Navigator.pop(
       context,
@@ -4985,7 +5326,7 @@ class SelezionaTurnoDialog extends StatefulWidget {
 }
 
 class _SelezionaTurnoDialogState extends State<SelezionaTurnoDialog> {
-  Map<String, String?> _datiTurni = {};
+  Map<String, TurnoRecord> _datiTurni = {};
   bool _loading = true;
   List<String> _nomiTurni = [];
 
@@ -4996,19 +5337,8 @@ class _SelezionaTurnoDialogState extends State<SelezionaTurnoDialog> {
   }
 
   Future<void> _caricaTurni() async {
-    final prefs = await SharedPreferences.getInstance();
-    final allKeys = prefs.getKeys();
-    final turniKeys = allKeys
-        .where((k) => k.startsWith('turno_custom_'))
-        .toList();
-    final nomi = turniKeys
-        .map((k) => k.replaceFirst('turno_custom_', ''))
-        .toList();
-    nomi.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
-    Map<String, String?> dati = {};
-    for (final nome in nomi) {
-      dati[nome] = prefs.getString('turno_custom_$nome');
-    }
+    final dati = await TurnoStorage.loadAllTurnoRecords();
+    final nomi = dati.keys.toList();
     setState(() {
       _datiTurni = dati;
       _nomiTurni = nomi;
@@ -5016,12 +5346,12 @@ class _SelezionaTurnoDialogState extends State<SelezionaTurnoDialog> {
     });
   }
 
-Future<void> apriModificaTurno({String? nome, String? dati}) async {
+Future<void> apriModificaTurno({String? nome, TurnoRecord? record}) async {
   final result = await showDialog(
     context: context,
     builder: (context) => _ModificaTurnoDialog(
       nomeTurno: nome,
-      datiSalvati: dati,
+      datiSalvati: record == null ? null : jsonEncode(record.toJson()),
       oreDiLavoroPredefinite: const Duration(hours: 7),
     ),
   );
@@ -5075,26 +5405,12 @@ Future<void> apriModificaTurno({String? nome, String? dati}) async {
                     separatorBuilder: (_, _) => const Divider(height: 1),
                     itemBuilder: (context, idx) {
                       final nome = _nomiTurni[idx];
-                      final dati = _datiTurni[nome] ?? '';
-                      String orario = '';
-                      if (dati.isNotEmpty) {
-                        final parts = dati.split('|');
-                        if (parts.length >= 2) {
-                          final inizio = parts[0];
-                          final fine = parts[1];
-                          if (inizio.isNotEmpty && fine.isNotEmpty) {
-                            orario = '$inizio - $fine';
-                          } else if (inizio.isNotEmpty) {
-                            orario = inizio;
-                          } else if (fine.isNotEmpty) {
-                            orario = fine;
-                          }
-                        }
-                      }
+                      final record = _datiTurni[nome] ?? TurnoRecord.empty();
+                      final orario = record.previewText;
                       return ListTile(
                         onTap: () => Navigator.of(
                           context,
-                        ).pop({'nome': nome, 'dati': dati}),
+                        ).pop({'nome': nome, 'record': record}),
                         title: Text(
                           nome,
                           style: const TextStyle(fontWeight: FontWeight.bold),
@@ -5895,16 +6211,24 @@ Future<void> esportaBackup(BuildContext context) async {
 
     // Turni Personalizzati
     final turniPersKeys = prefs.getKeys().where((k) => k.startsWith('turno_custom_')).toList();
-    final turniPersMap = <String, String>{};
+    final turniPersMap = <String, dynamic>{};
     for (var k in turniPersKeys) {
-      turniPersMap[k.replaceFirst('turno_custom_', '')] = prefs.getString(k) ?? '';
+      final name = k.replaceFirst('turno_custom_', '');
+      final record = await TurnoStorage.loadTurnoRecord(name);
+      if (record != null) {
+        turniPersMap[name] = record.toJson();
+      }
     }
 
     // Turni Giornata
     final turniGiornKeys = allKeys.where((k) => k.startsWith('daydata_')).toList();
-    final turniGiornMap = <String, String>{};
+    final turniGiornMap = <String, dynamic>{};
     for (var k in turniGiornKeys) {
-      turniGiornMap[k.replaceFirst('daydata_', '')] = prefs.getString(k) ?? '';
+      final date = k.replaceFirst('daydata_', '');
+      final record = await DayDataStorage.loadDayDataRecord(date);
+      if (record != null) {
+        turniGiornMap[date] = record.toJson();
+      }
     }
 
     // Costruisci la struttura JSON
@@ -6008,12 +6332,22 @@ Future<void> importaBackup(
       // Turni Personalizzati
       final turniPers = backupData['§TurniPers§'] as Map<String, dynamic>? ?? {};
       for (final entry in turniPers.entries) {
-        await prefs.setString('turno_custom_${entry.key}', entry.value as String);
+        final restored = TurnoRecord.fromBackupValue(entry.value);
+        if (restored != null) {
+          await TurnoStorage.saveTurnoRecord(entry.key, restored);
+        } else if (entry.value is String) {
+          await prefs.setString('turno_custom_${entry.key}', entry.value as String);
+        }
       }
       // Turni Giornata
       final turniGiorn = backupData['§TurniGiorn§'] as Map<String, dynamic>? ?? {};
       for (final entry in turniGiorn.entries) {
-        await prefs.setString('daydata_${entry.key}', entry.value as String);
+        final restored = DayDataRecord.fromBackupValue(entry.value);
+        if (restored != null) {
+          await DayDataStorage.saveDayData(entry.key, restored);
+        } else if (entry.value is String) {
+          await prefs.setString('daydata_${entry.key}', entry.value as String);
+        }
       }
     } else {
       // --- VECCHIO FORMATO TESTUALE ---
